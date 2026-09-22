@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   // Sin servidor no hay optimizador de imágenes: `next/image` sirve los archivos
   // tal cual, así que las capturas deben subirse ya optimizadas (WebP, ~1600 px).
   images: { unoptimized: true },
+  // Oculta el botón flotante de Next.js en `npm run dev` (en producción nunca aparece).
+  // Los errores de compilación o de ejecución se siguen mostrando.
+  devIndicators: false,
   experimental: {
     // 404 global: el layout raíz vive en `app/[lang]`, así que no hay un layout
     // único desde el que componer la página de "no encontrado".
