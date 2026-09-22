@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 750" width="1200" height="750">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0B2A5E"/>
+      <stop offset="1" stop-color="#050B18"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.08" r="0.75">
+      <stop offset="0" stop-color="#34D399" stop-opacity="0.34"/>
+      <stop offset="1" stop-color="#34D399" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#34D399" stop-opacity="0.22"/>
+      <stop offset="1" stop-color="#34D399" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#FFFFFF" stroke-opacity="0.05"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="750" fill="url(#bg)"/>
+  <rect width="1200" height="750" fill="url(#grid)"/>
+  <rect width="1200" height="750" fill="url(#glow)"/>
+  <g opacity="0.6">
+    <rect x="455" y="60" width="290" height="630" rx="44" fill="#050B18" fill-opacity="0.6" stroke="#FFFFFF" stroke-opacity="0.14" stroke-width="2"/>
+    <rect x="555" y="80" width="90" height="22" rx="11" fill="#FFFFFF" fill-opacity="0.1"/>
+    <rect x="490" y="140" width="150" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.14"/><rect x="490" y="170" width="110" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.14"/>
+    <rect x="485" y="562" width="230" height="52" rx="14" fill="#FFFFFF" fill-opacity="0.045"/>
+    <rect x="485" y="624" width="230" height="46" rx="14" fill="#FFFFFF" fill-opacity="0.045"/>
+    <rect x="505" y="582" width="140" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.14"/>
+    <rect x="505" y="641" width="110" height="12" rx="6" fill="#FFFFFF" fill-opacity="0.14"/>
+  </g>
+  <circle cx="600" cy="360" r="190" fill="url(#halo)"/>
+  <circle cx="600" cy="360" r="96" fill="#050B18" fill-opacity="0.72" stroke="#34D399" stroke-opacity="0.5" stroke-width="2"/>
+  <g transform="translate(552 312) scale(4)" fill="none" stroke="#34D399" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21v-8M8 21h8"/><path d="M12 13c0-4.2 3.1-6.8 7.5-6.8 0 4.3-3.1 6.8-7.5 6.8Z"/><path d="M12 11c0-3.2-2.4-5.3-5.8-5.3 0 3.3 2.4 5.3 5.8 5.3Z"/></g>
+  <text x="600" y="530" text-anchor="middle" font-family="ui-monospace, 'SF Mono', 'Cascadia Mono', Consolas, Menlo, monospace" font-size="26" font-weight="600" letter-spacing="8" fill="#FFFFFF" fill-opacity="0.78">EUDR</text>
+</svg>
