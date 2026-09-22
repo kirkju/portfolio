@@ -133,13 +133,13 @@
 }
 
 /* ---------- Animaciones (solo si el usuario no pidió reducir el movimiento) ---------- */
+/* Solo desplazamiento, sin opacidad: el texto que entra por el borde de la pantalla
+   nunca queda semitransparente (mantiene el contraste AA en todo momento). */
 @keyframes reveal {
   from {
-    opacity: 0;
-    translate: 0 1.25rem;
+    translate: 0 2rem;
   }
   to {
-    opacity: 1;
     translate: 0 0;
   }
 }
@@ -179,7 +179,7 @@
     .reveal {
       animation: reveal linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 10rem;
+      animation-range: entry 0% entry 12rem;
     }
   }
 
@@ -188,7 +188,37 @@
   }
 }
 
+/* Al imprimir (o generar el PDF) siempre se usa el tema claro, sobre papel blanco. */
 @media print {
+  @page {
+    size: A4;
+    margin: 12mm 13mm;
+  }
+
+  :root,
+  [data-theme] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #eef2f8;
+    --border: #dce3ee;
+    --fg: #0b1b33;
+    --heading: #0b2a5e;
+    --muted: #4a5b73;
+    --accent: #0e7490;
+    --accent-fg: #ffffff;
+    --success: #047857;
+    --warning: #b45309;
+    --card-shadow: none;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
   .reveal,
   .rise {
     animation: none !important;
