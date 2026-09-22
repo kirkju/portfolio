@@ -20,6 +20,8 @@ CV digital y portafolio bilingüe (ES/EN) de Alejandro Vargas, Ingeniero de Soft
 | `npm run typecheck` | Comprobación de tipos de TypeScript. |
 | `npm run cv:pdf` | Hace el build y regenera `public/cv/*.pdf` desde los datos del CV. |
 
+En `npm run dev` están ocultos el botón y los avisos ("Issues") de Next.js: `devIndicators: false` en `next.config.ts` y `<HideDevOverlay />` en `src/app/[lang]/layout.tsx`. Los errores siguen apareciendo en la terminal. Para verlos también en el navegador, quita `<HideDevOverlay />`.
+
 Requisitos: Node.js 20.9 o superior (se recomienda 24). `npm run cv:pdf` requiere Node 22.18 o superior y Microsoft Edge o Google Chrome instalado.
 
 ## Estructura

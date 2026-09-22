@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { notFound } from "next/navigation";
 import "../globals.css";
+import { HideDevOverlay } from "@/components/hide-dev-overlay";
 import { cv } from "@/data/cv";
 import { ui } from "@/data/ui";
 import { fontVariables } from "@/lib/fonts";
@@ -77,6 +78,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <html lang={lang} data-theme="dark" className={fontVariables} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <HideDevOverlay />
       </head>
       <body className="min-h-svh bg-bg font-sans text-fg antialiased">{children}</body>
     </html>

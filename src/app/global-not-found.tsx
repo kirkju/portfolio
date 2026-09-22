@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { HideDevOverlay } from "@/components/hide-dev-overlay";
 import { ArrowRightIcon } from "@/components/icons";
 import { buttonClasses } from "@/components/ui/button-link";
 import { fontVariables } from "@/lib/fonts";
@@ -17,6 +18,7 @@ export default function GlobalNotFound() {
     <html lang="es" data-theme="dark" className={fontVariables} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <HideDevOverlay />
       </head>
       <body className="min-h-svh bg-bg font-sans text-fg antialiased">
         <main className="wrapper grid min-h-svh content-center gap-12 py-20">
