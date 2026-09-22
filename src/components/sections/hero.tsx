@@ -116,8 +116,8 @@ export function Hero({ locale }: { locale: Locale }) {
               <Image
                 src={profile.photo}
                 alt={t.hero.photoAlt}
-                width={576}
-                height={576}
+                width={540}
+                height={540}
                 priority
                 className="size-full rounded-full object-cover"
               />

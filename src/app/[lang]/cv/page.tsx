@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { ArrowRightIcon, DownloadIcon } from "@/components/icons";
 import { buttonClasses } from "@/components/ui/button-link";
 import { cv } from "@/data/cv";
 import { ui } from "@/data/ui";
+import { publicFileExists } from "@/lib/assets";
 import { isLocale, localePath, type Locale } from "@/lib/i18n";
-import { cn, formatYearMonth, pick } from "@/lib/utils";
+import { byYearDesc, cn, formatYearMonth, pick } from "@/lib/utils";
 
 // Versión imprimible del CV. `npm run cv:pdf` la convierte en los PDF de /public/cv.
 
@@ -43,21 +45,32 @@ function Sheet({ locale }: { locale: Locale }) {
 
   return (
     <article className="mx-auto w-[210mm] bg-white p-[13mm] text-[9pt] leading-[1.45] text-[#0b1b33] shadow-2xl print:w-auto print:p-0 print:shadow-none">
-      <header className="rounded-xl bg-[#0b2a5e] px-[8mm] py-[6.5mm] text-white [print-color-adjust:exact]">
-        <h1 className="text-[24pt] leading-none font-semibold tracking-tight text-white">{profile.name}</h1>
-        <p className="mt-2 text-[11pt] text-[#a5f3fc]">{profile.title[locale]}</p>
-        <ul className="mt-3.5 flex flex-wrap gap-x-4 gap-y-1 text-[8pt] text-white/85">
-          <li>{profile.location[locale]}</li>
-          <li>
-            <a href={`mailto:${profile.email}`}>{profile.email}</a>
-          </li>
-          <li>
-            <a href={profile.social.github}>{displayUrl(profile.social.github)}</a>
-          </li>
-          <li>
-            <a href={profile.social.linkedin}>{displayUrl(profile.social.linkedin)}</a>
-          </li>
-        </ul>
+      <header className="flex items-center gap-[6mm] rounded-xl bg-[#0b2a5e] px-[8mm] py-[6.5mm] text-white [print-color-adjust:exact]">
+        {publicFileExists(profile.photo) ? (
+          <Image
+            src={profile.photo}
+            alt={t.hero.photoAlt}
+            width={540}
+            height={540}
+            className="size-[25mm] shrink-0 rounded-full object-cover ring-2 ring-white/25"
+          />
+        ) : null}
+        <div className="min-w-0">
+          <h1 className="text-[24pt] leading-none font-semibold tracking-tight text-white">{profile.name}</h1>
+          <p className="mt-2 text-[11pt] text-[#a5f3fc]">{profile.title[locale]}</p>
+          <ul className="mt-3.5 flex flex-wrap gap-x-4 gap-y-1 text-[8pt] text-white/85">
+            <li>{profile.location[locale]}</li>
+            <li>
+              <a href={`mailto:${profile.email}`}>{profile.email}</a>
+            </li>
+            <li>
+              <a href={profile.social.github}>{displayUrl(profile.social.github)}</a>
+            </li>
+            <li>
+              <a href={profile.social.linkedin}>{displayUrl(profile.social.linkedin)}</a>
+            </li>
+          </ul>
+        </div>
       </header>
 
       <div className="mt-[6mm] grid grid-cols-[minmax(0,1fr)_56mm] gap-[7mm]">
@@ -97,7 +110,7 @@ function Sheet({ locale }: { locale: Locale }) {
           <section>
             <Heading>{c.publications}</Heading>
             <ol className="space-y-2.5">
-              {cv.publications.map((p) => (
+              {byYearDesc(cv.publications).map((p) => (
                 <li key={p.id} className="break-inside-avoid">
                   <p lang="en" className="font-medium text-[#0b2a5e]">
                     {p.title}
@@ -127,6 +140,7 @@ function Sheet({ locale }: { locale: Locale }) {
                     <p className="font-semibold text-[#0b2a5e]">{project.title[locale]}</p>
                     <p className="shrink-0 font-mono text-[7.5pt] text-[#4a5b73]">
                       {project.year}
+                      {project.ongoing ? ` — ${t.experience.present}` : ""}
                       {project.status ? ` · ${statusLabel[project.status]}` : ""}
                     </p>
                   </div>

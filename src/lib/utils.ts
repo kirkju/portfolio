@@ -20,6 +20,11 @@ export function formatYearMonth(value: YearMonth): string {
   return `${month}/${year}`;
 }
 
+/** Ordena por año, del más reciente al más antiguo; a igual año conserva el orden del archivo. */
+export function byYearDesc<T extends { year: number }>(items: readonly T[]): T[] {
+  return [...items].sort((a, b) => b.year - a.year);
+}
+
 /** Serializa JSON-LD escapando `<` para que no pueda cerrar la etiqueta <script>. */
 export function jsonLd(data: unknown): string {
   return JSON.stringify(data).replace(/</g, "\\u003c");

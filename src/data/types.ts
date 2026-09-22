@@ -49,7 +49,10 @@ export interface Project {
   title: Localized;
   /** Cliente u organización (opcional). */
   client?: Localized;
+  /** Año del proyecto (o año de inicio si `ongoing`). */
   year: number;
+  /** Proyecto en curso: se muestra "2025 — Presente". */
+  ongoing?: boolean;
   /** Sin estado = no se muestra el badge. */
   status?: ProjectStatus;
   image: string;

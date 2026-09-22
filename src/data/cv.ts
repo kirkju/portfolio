@@ -2,7 +2,8 @@
  * Contenido del CV: es lo único que necesitas editar para actualizar el sitio.
  *
  * - Cada texto traducible es un objeto `{ es, en }`.
- * - El orden de los arreglos es el orden en que se muestran.
+ * - El orden de los arreglos es el orden en que se muestran, salvo las publicaciones,
+ *   que se ordenan solas por año (la más reciente primero; a igual año, el orden de aquí).
  * - Tras cambiar algo aquí, regenera los PDF con `npm run cv:pdf`.
  * - Busca "TODO" para ver los datos pendientes.
  */
@@ -56,7 +57,7 @@ export const cv: CV = {
         es: ["Diseño y programación de un sistema CRM."],
         en: ["Design and development of a CRM system."],
       },
-      // TODO: agrega aquí las tecnologías del CRM (por ejemplo, tags: [".NET", "React"]).
+      tags: ["Rust", "Actix-web", "PostgreSQL", "HTMX"],
     },
     {
       role: { es: "Desarrollador web y herramientas", en: "Web & Tools Developer" },
@@ -81,6 +82,48 @@ export const cv: CV = {
   // capturas reales, actualiza `image` y describe la captura en `imageAlt`
   // (un alt vacío indica que la imagen es decorativa).
   projects: [
+    {
+      // Proyecto confidencial: no nombrar al cliente, el producto ni sus sistemas internos.
+      id: "crm-rust",
+      title: { es: "Plataforma CRM Unificada en Rust", en: "Unified CRM Platform in Rust" },
+      client: { es: "Cliente confidencial", en: "Confidential client" },
+      year: 2025,
+      ongoing: true,
+      status: "production",
+      image: "/projects/crm-rust.svg",
+      imageAlt: { es: "", en: "" },
+      context: {
+        es: "Los datos de clientes, oportunidades, contratos y cotizaciones estaban repartidos en cuatro sistemas internos heredados.",
+        en: "Customer, opportunity, contract, and quoting data was spread across four legacy internal systems.",
+      },
+      solution: {
+        es: "Plataforma web en Rust (Actix-web) sobre PostgreSQL que unifica esos datos en una sola experiencia de CRM, ventas y cotizaciones —empresas, contactos, oportunidades, propuestas y actividades—, con interfaz HTML-first (HTMX + Handlebars) y seguridad a nivel de fila.",
+        en: "A Rust (Actix-web) web platform on PostgreSQL that unifies that data into a single CRM, sales, and quoting experience — companies, contacts, opportunities, proposals, and activities — with an HTML-first UI (HTMX + Handlebars) and row-level security.",
+      },
+      result: {
+        es: "En producción y en desarrollo continuo: CRM, ventas y cotizaciones en una sola plataforma, con dashboards de pronóstico y de actividad y un registro de auditoría automático.",
+        en: "In production and under active development: CRM, sales, and quoting in one platform, with forecast and activity dashboards and an automatic audit trail.",
+      },
+      features: {
+        es: [
+          "Empresas, contactos, oportunidades y propuestas",
+          "Registro y seguimiento de actividades",
+          "Dashboards de pronóstico y KPIs",
+          "Acceso por roles con Row-Level Security",
+          "Auditoría automática con triggers de PostgreSQL",
+          "Exportación de reportes (XLSX, CSV, PDF)",
+        ],
+        en: [
+          "Companies, contacts, opportunities, and proposals",
+          "Activity logging and follow-ups",
+          "Forecast and KPI dashboards",
+          "Role-based access with row-level security",
+          "Automatic audit trail via PostgreSQL triggers",
+          "Report export (XLSX, CSV, PDF)",
+        ],
+      },
+      stack: ["Rust", "Actix-web", "PostgreSQL", "SQLx", "HTMX", "Handlebars", "Docker", "OpenTelemetry"],
+    },
     {
       id: "ferrexpress-ventas",
       title: { es: "Sitio Web de Ventas Ferrexpress", en: "Ferrexpress Sales Website" },
@@ -112,7 +155,7 @@ export const cv: CV = {
       title: { es: "Automatización de Nóminas ASEGURE", en: "ASEGURE Payroll Automation" },
       client: { es: "ASEGURE", en: "ASEGURE" },
       year: 2023,
-      status: "active",
+      status: "production",
       image: "/projects/asegure-nominas.svg",
       imageAlt: { es: "", en: "" },
       context: {
@@ -124,8 +167,8 @@ export const cv: CV = {
         en: "C# tools with batch processing, automated calculations, and optimized SQL queries, integrated with the ERP and with Power BI reporting.",
       },
       result: {
-        es: "Herramientas activas que automatizan la generación de nóminas y alimentan los reportes de BI.",
-        en: "Tools in active use that automate payroll generation and feed the BI reports.",
+        es: "En producción: automatizan la generación de nóminas y alimentan los reportes de BI.",
+        en: "In production: they automate payroll generation and feed the BI reports.",
       },
       features: {
         es: ["Procesamiento batch", "Cálculos automáticos", "Integración con ERP", "Reportes BI"],
@@ -203,7 +246,7 @@ export const cv: CV = {
       id: "trankipay",
       title: { es: "Trankipay", en: "Trankipay" },
       year: 2026,
-      // TODO: estado de Trankipay ("development", "production", ...). Sin estado no se muestra el badge.
+      status: "active",
       image: "/projects/trankipay.svg",
       imageAlt: { es: "", en: "" },
       context: {

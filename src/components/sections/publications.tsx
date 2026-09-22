@@ -6,6 +6,7 @@ import { cv } from "@/data/cv";
 import type { Publication } from "@/data/types";
 import { ui } from "@/data/ui";
 import type { Locale } from "@/lib/i18n";
+import { byYearDesc } from "@/lib/utils";
 
 function Authors({ authors, label }: { authors: readonly string[]; label: string }) {
   return (
@@ -112,7 +113,7 @@ export function Publications({ locale }: { locale: Locale }) {
       className="border-y border-border bg-surface/40"
     >
       <ol className="grid gap-5">
-        {cv.publications.map((publication) => (
+        {byYearDesc(cv.publications).map((publication) => (
           <li key={publication.id} className="reveal">
             <PublicationCard publication={publication} locale={locale} />
           </li>

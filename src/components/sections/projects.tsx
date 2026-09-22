@@ -37,6 +37,7 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
           <p className="font-mono text-xs text-muted">
             {project.client ? `${project.client[locale]} · ` : null}
             {project.year}
+            {project.ongoing ? ` — ${t.experience.present}` : null}
           </p>
           {project.status ? (
             <StatusBadge tone={statusTone[project.status]}>{t.projects.status[project.status]}</StatusBadge>

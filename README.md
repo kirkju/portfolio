@@ -53,14 +53,14 @@ src/
 Todo el CV está en **`src/data/cv.ts`**. No hace falta tocar los componentes.
 
 - Cada texto traducible es un objeto `{ es: "…", en: "…" }`.
-- El orden de los arreglos es el orden en pantalla (experiencia, proyectos, publicaciones…).
+- El orden de los arreglos es el orden en pantalla (experiencia, proyectos…). Las publicaciones se ordenan solas por año, de la más reciente a la más antigua; a igual año se respeta el orden del archivo.
 - **Badge "Disponible para nuevas oportunidades":** `profile.availableForWork: true | false`.
 - **Foto:** guarda un JPG cuadrado de al menos 400 × 400 px en `public/images/profile.jpg`. Aparece sola en el hero y en el JSON-LD. Si no hay foto, se muestra el monograma.
 - **Capturas de proyectos:** exporta cada captura en WebP de unos 1600 × 1000 px (16:10), ya optimizada, porque el sitio no tiene optimizador de imágenes. Luego:
   1. Guárdala en `public/projects/`, con un nombre nuevo si reemplaza a otra, por la caché.
   2. Cambia `image` en el proyecto.
   3. Describe la captura en `imageAlt`.
-- **Estados de proyecto:** `production`, `active`, `delivered`, `pilot` o `development`. Sin `status`, no se muestra el badge.
+- **Estados de proyecto:** `production`, `active`, `delivered`, `pilot` o `development`. Sin `status`, no se muestra el badge. Con `ongoing: true`, el año se muestra como "2025 — Presente".
 - **Publicaciones:** `status` es `published` o `pending`. El botón de DOI aparece solo si hay `doi` (o `url`), y el resumen solo si hay `abstract`.
 - **Textos de la interfaz** (menú, botones, títulos de sección): `src/data/ui.ts`.
 - **URL del sitio** (dominio propio en el futuro): `src/lib/site.ts`, o la variable `NEXT_PUBLIC_SITE_URL` al hacer el build.
