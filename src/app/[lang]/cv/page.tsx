@@ -97,11 +97,13 @@ function Sheet({ locale }: { locale: Locale }) {
                       {formatYearMonth(job.start)} — {job.end ? formatYearMonth(job.end) : t.experience.present}
                     </p>
                   </div>
-                  <ul className="mt-1 list-disc space-y-0.5 pl-4 text-[#1e2d45] marker:text-[#0e7490]">
-                    {job.highlights[locale].map((item) => (
-                      <li key={item}>{item}</li>
-                    ))}
-                  </ul>
+                  {job.highlights[locale].length ? (
+                    <ul className="mt-1 list-disc space-y-0.5 pl-4 text-[#1e2d45] marker:text-[#0e7490]">
+                      {job.highlights[locale].map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  ) : null}
                 </li>
               ))}
             </ol>

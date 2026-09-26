@@ -6,10 +6,10 @@ import type { Locale } from "@/lib/i18n";
 
 const es = {
   meta: {
-    title: "Alejandro Vargas — Ingeniero de Software | .NET, React e IA",
+    title: "Alejandro Vargas — Ingeniero en Sistemas | .NET, React e IA",
     description:
-      "Ingeniero de software full-stack (.NET y React) con enfoque en IA aplicada e investigación. Experiencia, proyectos y publicaciones científicas en machine learning y LLMs.",
-    ogAlt: "Alejandro Vargas — Ingeniero de Software · .NET, React e IA aplicada",
+      "Ingeniero en Sistemas con perfil full-stack (.NET y React), enfocado en IA aplicada e investigación. Experiencia, proyectos y publicaciones científicas en machine learning y LLMs.",
+    ogAlt: "Alejandro Vargas — Ingeniero en Sistemas · .NET, React e IA aplicada",
     ogTags: [".NET", "React", "IA aplicada", "Publicaciones IEEE · Springer"],
     cvTitle: "CV — Alejandro Vargas",
     cvDescription: "Versión imprimible del CV de Alejandro Vargas.",
@@ -156,10 +156,10 @@ export type UIStrings = typeof es;
 
 const en: UIStrings = {
   meta: {
-    title: "Alejandro Vargas — Software Engineer | .NET, React & AI",
+    title: "Alejandro Vargas — Computer Systems Engineer | .NET, React & AI",
     description:
-      "Full-stack software engineer (.NET and React) focused on applied AI and research. Experience, projects, and scientific publications in machine learning and LLMs.",
-    ogAlt: "Alejandro Vargas — Software Engineer · .NET, React & Applied AI",
+      "Computer Systems Engineer with a full-stack profile (.NET and React), focused on applied AI and research. Experience, projects, and scientific publications in machine learning and LLMs.",
+    ogAlt: "Alejandro Vargas — Computer Systems Engineer · .NET, React & Applied AI",
     ogTags: [".NET", "React", "Applied AI", "IEEE · Springer publications"],
     cvTitle: "CV — Alejandro Vargas",
     cvDescription: "Printable CV of Alejandro Vargas.",

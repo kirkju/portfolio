@@ -36,7 +36,7 @@ export function Experience({ locale }: { locale: Locale }) {
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute top-1.5 -left-[0.4375rem] size-3.5 rounded-full border-2",
+                    "absolute top-1.5 -left-1.75 size-3.5 rounded-full border-2",
                     isCurrent ? "border-accent bg-accent" : "border-border bg-bg",
                   )}
                 >
@@ -52,14 +52,16 @@ export function Experience({ locale }: { locale: Locale }) {
                   {isCurrent ? <StatusBadge tone="success">{t.experience.current}</StatusBadge> : null}
                 </p>
 
-                <ul className="mt-5 space-y-3 text-muted">
-                  {job.highlights[locale].map((item) => (
-                    <li key={item} className="relative pl-5 leading-relaxed">
-                      <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2.5 bg-accent" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                {job.highlights[locale].length ? (
+                  <ul className="mt-5 space-y-3 text-muted">
+                    {job.highlights[locale].map((item) => (
+                      <li key={item} className="relative pl-5 leading-relaxed">
+                        <span aria-hidden="true" className="absolute top-[0.7em] left-0 h-px w-2.5 bg-accent" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
 
                 {job.tags?.length ? <TagList items={job.tags} label={t.projects.stack} className="mt-6" /> : null}
               </div>

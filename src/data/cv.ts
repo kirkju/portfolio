@@ -15,8 +15,8 @@ export const cv: CV = {
     initials: "AV",
     authorNames: ["Alejandro Vargas", "Alejandro Jose Vargas Erazo"],
     title: {
-      es: "Ingeniero de Software · .NET, React e IA aplicada",
-      en: "Software Engineer · .NET, React & Applied AI",
+      es: "Ingeniero en Sistemas · .NET, React e IA aplicada",
+      en: "Computer Systems Engineer · .NET, React & Applied AI",
     },
     tagline: {
       es: "Diseño y desarrollo aplicaciones web, APIs y soluciones con IA que resuelven necesidades reales de negocio, respaldado por investigación publicada en machine learning y LLMs.",
@@ -53,10 +53,8 @@ export const cv: CV = {
       role: { es: "Programador", en: "Programmer" },
       company: "Avance Enterprise Solutions (AVNC)",
       start: "2025-12",
-      highlights: {
-        es: ["Diseño y programación de un sistema CRM."],
-        en: ["Design and development of a CRM system."],
-      },
+      // Sin viñetas: el trabajo aquí se describe en el proyecto confidencial.
+      highlights: { es: [], en: [] },
       tags: ["Rust", "Actix-web", "PostgreSQL", "HTMX"],
     },
     {
