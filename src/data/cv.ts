@@ -396,8 +396,17 @@ export const cv: CV = {
       title: "Spatio-Temporal DeepONets with Graph Neural Networks for Probabilistic Dengue Forecasting in Honduras",
       year: 2026,
       location: { es: "Maastricht, Países Bajos", en: "Maastricht, Netherlands" },
-      status: "pending",
-      // TODO: conferencia (venue/venueFull/publisher), autores, resumen, palabras clave y DOI cuando se publique.
+      venue: "IJCNN 2026 (IEEE WCCI)",
+      venueFull: "2026 International Joint Conference on Neural Networks (IJCNN)",
+      publisher: "IEEE",
+      status: "published",
+      authors: ["Alejandro Jose Vargas Erazo", "Jason David Torres Banegas", "Luis Loo"],
+      doi: "10.1109/IJCNN69854.2026.11729621",
+      abstract: {
+        es: "Planteamos el pronóstico del dengue como un problema de aprendizaje de operadores que transforma historiales climático-epidemiológicos de varias semanas en pronósticos probabilísticos de incidencia. Proponemos una Deep Operator Network espacio-temporal potenciada con Graph Neural Networks (DeepONet-GNN) que se condiciona en el contexto geográfico, la escala poblacional, el horizonte de pronóstico y la fase estacional. Evaluado en 20 regiones sanitarias de Honduras (mayo de 2022 – abril de 2024), el modelo alcanza una alta precisión temporal (MAE = 113 casos, una mejora del 23.6 % sobre XGBoost) con una incertidumbre bien calibrada (cobertura del 82.9 % para un nivel nominal del 80 %, CRPS = 101.5). La validación cruzada dejando una región fuera demuestra capacidad de generalización espacial (correlación media de 0.76) e identifica los retos que plantean las regiones atípicas de alta incidencia. Un sistema de alerta temprana basado en probabilidades de excedencia alcanza una sensibilidad del 97.9 % y una especificidad del 97.4 % en la detección de brotes. Los resultados establecen el aprendizaje de operadores con codificación espacial basada en grafos como un marco eficaz para el pronóstico epidemiológico impulsado por el clima con cuantificación calibrada de la incertidumbre.",
+        en: "We formulate dengue forecasting as an operator learning problem mapping multi-week climate–epidemiological histories to probabilistic incidence forecasts. We propose a spatio-temporal Deep Operator Network enhanced with Graph Neural Networks (DeepONet-GNN) that conditions on geographic context, population scale, lead time, and seasonal phase. Evaluated across 20 sanitary regions in Honduras (May 2022–April 2024), the model achieves strong temporal accuracy (MAE = 113 cases, 23.6% improvement over XGBoost) with well-calibrated uncertainty (82.9% coverage at 80% nominal level, CRPS = 101.5). Leave-one-region-out cross-validation demonstrates spatial generalization capacity (mean correlation 0.76) while identifying challenges for high-incidence outlier regions. An exceedance-probability early warning system achieves 97.9% sensitivity and 97.4% specificity for outbreak detection. The results establish operator learning with graph-based spatial encoding as an effective framework for climate-driven epidemiological forecasting with calibrated uncertainty quantification.",
+      },
+      // TODO: palabras clave del autor (IEEE Xplore no las expone por API; copiarlas de la página del artículo).
     },
     {
       id: "radicalization-agentic",
