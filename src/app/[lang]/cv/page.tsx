@@ -8,6 +8,7 @@ import { cv } from "@/data/cv";
 import { ui } from "@/data/ui";
 import { publicFileExists } from "@/lib/assets";
 import { isLocale, localePath, type Locale } from "@/lib/i18n";
+import { absoluteUrl, siteUrl } from "@/lib/site";
 import { byYearDesc, cn, formatYearMonth, pick } from "@/lib/utils";
 
 // Versión imprimible del CV. `npm run cv:pdf` la convierte en los PDF de /public/cv.
@@ -68,6 +69,9 @@ function Sheet({ locale }: { locale: Locale }) {
             </li>
             <li>
               <a href={profile.social.linkedin}>{displayUrl(profile.social.linkedin)}</a>
+            </li>
+            <li>
+              <a href={absoluteUrl(localePath(locale))}>{displayUrl(siteUrl)}</a>
             </li>
           </ul>
         </div>
