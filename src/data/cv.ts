@@ -39,11 +39,11 @@ export const cv: CV = {
 
   about: {
     es: [
-      "Ingeniero en Sistemas Computacionales con más de 5 años de experiencia en desarrollo de software, enfocado en la construcción de aplicaciones web, APIs y soluciones basadas en datos e inteligencia artificial.",
+      "Ingeniero en Sistemas Computacionales con más de 3 años de experiencia en desarrollo de software, enfocado en la construcción de aplicaciones web, APIs y soluciones basadas en datos e inteligencia artificial.",
       "Experiencia con .NET, React, Python, Rust y SQL, además de herramientas cloud y de desarrollo como Azure, Docker y Git. Orientado al diseño de soluciones escalables, mantenibles y centradas en resolver necesidades reales de negocio.",
     ],
     en: [
-      "Computer Systems Engineer with more than 5 years of experience in software development, focused on building web applications, APIs, and solutions driven by data and artificial intelligence.",
+      "Computer Systems Engineer with more than 3 years of experience in software development, focused on building web applications, APIs, and solutions driven by data and artificial intelligence.",
       "Experienced with .NET, React, Python, Rust, and SQL, as well as cloud and development tools such as Azure, Docker, and Git. Focused on designing scalable, maintainable solutions centered on solving real business needs.",
     ],
   },
@@ -53,9 +53,21 @@ export const cv: CV = {
       role: { es: "Programador", en: "Programmer" },
       company: "Avance Enterprise Solutions (AVNC)",
       start: "2025-12",
-      // Sin viñetas: el trabajo aquí se describe en el proyecto confidencial.
-      highlights: { es: [], en: [] },
-      tags: ["Rust", "Actix-web", "PostgreSQL", "HTMX"],
+      // Trabajo confidencial: describirlo solo en términos genéricos, sin nombrar
+      // al cliente, los productos ni sus sistemas internos.
+      highlights: {
+        es: [
+          "Desarrollo, en equipo, una plataforma CRM full-stack en Rust (Actix-web) y PostgreSQL con interfaz HTML-first (HTMX).",
+          "Construyo dashboards de pronóstico y de actividad sobre funciones de PostgreSQL, con exportación de reportes y pruebas automatizadas.",
+          "Desarrollé un portal de pagos y facturas en React y TypeScript.",
+        ],
+        en: [
+          "Develop, as part of a team, a full-stack CRM platform in Rust (Actix-web) and PostgreSQL with an HTML-first UI (HTMX).",
+          "Build forecast and activity dashboards on PostgreSQL functions, with report exports and automated tests.",
+          "Built a payments and invoicing portal in React and TypeScript.",
+        ],
+      },
+      tags: ["Rust", "Actix-web", "PostgreSQL", "HTMX", "React", "TypeScript"],
     },
     {
       role: { es: "Desarrollador web y herramientas", en: "Web & Tools Developer" },
@@ -95,8 +107,8 @@ export const cv: CV = {
         en: "Customer, opportunity, contract, and quoting data was spread across four legacy internal systems.",
       },
       solution: {
-        es: "Plataforma web en Rust (Actix-web) sobre PostgreSQL que unifica esos datos en una sola experiencia de CRM, ventas y cotizaciones —empresas, contactos, oportunidades, propuestas y actividades—, con interfaz HTML-first (HTMX + Handlebars) y seguridad a nivel de fila.",
-        en: "A Rust (Actix-web) web platform on PostgreSQL that unifies that data into a single CRM, sales, and quoting experience — companies, contacts, opportunities, proposals, and activities — with an HTML-first UI (HTMX + Handlebars) and row-level security.",
+        es: "Plataforma web en Rust (Actix-web) sobre PostgreSQL que unifica los datos de cuatro sistemas heredados en una sola experiencia de CRM, ventas y cotizaciones —empresas, contactos, oportunidades, propuestas y actividades—, con interfaz HTML-first (HTMX + Handlebars) y seguridad a nivel de fila.",
+        en: "A Rust (Actix-web) web platform on PostgreSQL that unifies data from four legacy systems into a single CRM, sales, and quoting experience — companies, contacts, opportunities, proposals, and activities — with an HTML-first UI (HTMX + Handlebars) and row-level security.",
       },
       result: {
         es: "En producción y en desarrollo continuo: CRM, ventas y cotizaciones en una sola plataforma, con dashboards de pronóstico y de actividad y un registro de auditoría automático.",
@@ -121,6 +133,50 @@ export const cv: CV = {
         ],
       },
       stack: ["Rust", "Actix-web", "PostgreSQL", "SQLx", "HTMX", "Handlebars", "Docker", "OpenTelemetry"],
+    },
+    {
+      // Proyecto confidencial: no nombrar el producto, la empresa, sus proveedores ni su infraestructura.
+      id: "campanas-multicanal",
+      title: {
+        es: "Sistema de Campañas Multicanal con IA",
+        en: "AI-Assisted Multichannel Campaign System",
+      },
+      client: { es: "Proyecto confidencial", en: "Confidential project" },
+      year: 2026,
+      status: "development",
+      image: "/projects/campanas-multicanal.svg",
+      imageAlt: { es: "", en: "" },
+      context: {
+        es: "Preparar una campaña multicanal tomaba días de trabajo manual —buscar empresas, encontrar contactos, verificar correos, quitar duplicados y adaptar formatos y mensajes—, y cada canal terminaba trabajando con una lista distinta.",
+        en: "Putting together a multichannel campaign took days of manual work — finding companies and contacts, verifying emails, removing duplicates, and adapting formats and messages — and each channel ended up working from a different list.",
+      },
+      solution: {
+        es: "Aplicación web que convierte un perfil de cliente ideal en campañas para cuatro canales —correo en frío, mensajes directos y anuncios en la red profesional, y anuncios en redes sociales— sobre una única audiencia: enriquece, verifica y segmenta los contactos, y usa un LLM (API de Claude) para redactar mensajes a medida, clasificar respuestas y proponer borradores. API en FastAPI sobre PostgreSQL con frontend en React; todo envío o lanzamiento lo confirma una persona.",
+        en: "A web app that turns an ideal customer profile into campaigns for four channels — cold email, direct messages and ads on the professional network, and social media ads — built on a single audience: it enriches, verifies, and segments contacts, and uses an LLM (Claude API) to write tailored messages, classify replies, and draft responses. A FastAPI API on PostgreSQL with a React frontend; every send or launch is confirmed by a person.",
+      },
+      result: {
+        es: "En desarrollo: los módulos de datos, audiencias, correo, respuestas y panel de métricas están construidos y probados en un entorno de demostración con Docker y datos sintéticos.",
+        en: "In development: the data, audience, email, reply, and metrics-dashboard modules are built and tested in a Docker demo environment with synthetic data.",
+      },
+      features: {
+        es: [
+          "Perfil de cliente ideal y buyer personas versionados",
+          "Enriquecimiento, verificación y deduplicación de contactos",
+          "Una sola audiencia para cuatro canales",
+          "Mensajes y borradores de respuesta con LLM",
+          "Confirmación humana antes de enviar o lanzar",
+          "Tope de gasto y registro de costos",
+        ],
+        en: [
+          "Versioned ideal customer profile and buyer personas",
+          "Contact enrichment, verification, and deduplication",
+          "A single audience across four channels",
+          "LLM-written messages and reply drafts",
+          "Human confirmation before sending or launching",
+          "Spending cap and cost logging",
+        ],
+      },
+      stack: ["Python", "FastAPI", "PostgreSQL", "React", "TypeScript", "Claude API", "Docker", "Playwright"],
     },
     {
       id: "ferrexpress-ventas",
@@ -241,43 +297,44 @@ export const cv: CV = {
       stack: ["Blazor", ".NET 10", "ASP.NET Core Identity", "PostgreSQL", "EF Core", "Azure Blob Storage"],
     },
     {
-      id: "trankipay",
-      title: { es: "Trankipay", en: "Trankipay" },
+      id: "tranki",
+      title: { es: "Tranki", en: "Tranki" },
       year: 2026,
-      status: "active",
-      image: "/projects/trankipay.svg",
+      status: "production",
+      image: "/projects/tranki.svg",
       imageAlt: { es: "", en: "" },
       context: {
-        es: "Plataforma para vender en línea paquetes de servicios médicos en el mercado de salud hondureño.",
-        en: "A platform for selling medical service packages online in the Honduran healthcare market.",
+        es: "Marketplace de paquetes médicos prepagados para el mercado de salud hondureño: quien compra elige paquetes para sí mismo o para su familia.",
+        en: "A marketplace of prepaid medical packages for the Honduran healthcare market: buyers pick packages for themselves or their family.",
       },
       solution: {
-        es: "Sitio bilingüe donde los pacientes exploran, comparan y compran paquetes; los precios se calculan en el servidor (descuentos por paquete o por edad, e ISV) y un panel administrativo gestiona paquetes, pedidos y usuarios por roles.",
-        en: "A bilingual site where patients browse, compare, and buy packages; prices are computed on the server (package or age-based discounts, plus sales tax), and an admin panel manages packages, orders, and users by role.",
+        es: "Plataforma web bilingüe para explorar y comprar paquetes médicos prepagados: catálogo, carrito y checkout que registra un paciente por paquete, precios calculados en el servidor (descuentos por paquete o por edad), pago con tarjeta integrado con Cybersource y 3-D Secure, y un panel administrativo que gestiona paquetes, pedidos y usuarios por roles.",
+        en: "A bilingual web platform for browsing and buying prepaid medical packages: catalog, cart, and a checkout that registers one patient per package, server-side pricing (package or age-based discounts), card payments integrated with Cybersource and 3-D Secure, and an admin panel that manages packages, orders, and users by role.",
       },
       result: {
-        es: "Cubre el flujo completo de compra —catálogo, carrito, checkout y seguimiento del pedido— junto con su administración.",
-        en: "It covers the full purchase flow — catalog, cart, checkout, and order tracking — along with its administration.",
+        es: "En producción en tranki.care, desplegada con Docker Compose (Caddy, API y PostgreSQL).",
+        en: "In production at tranki.care, deployed with Docker Compose (Caddy, API, and PostgreSQL).",
       },
       features: {
         es: [
-          "Catálogo y checkout de paquetes",
+          "Catálogo y checkout con un paciente por paquete",
           "Precios calculados en el servidor",
+          "Pago con tarjeta (Cybersource, 3-D Secure)",
           "Pedidos con estados e historial",
           "Panel administrativo con roles",
-          "Inicio de sesión con correo o Google",
           "Correos transaccionales",
         ],
         en: [
-          "Package catalog and checkout",
+          "Catalog and checkout with one patient per package",
           "Server-side pricing",
+          "Card payments (Cybersource, 3-D Secure)",
           "Orders with status history",
           "Role-based admin panel",
-          "Email or Google sign-in",
           "Transactional emails",
         ],
       },
-      stack: ["React", "Vite", "Tailwind CSS", "Node.js", "Express", "SQL Server", "JWT", "Google OAuth"],
+      stack: ["React", "Vite", "Tailwind CSS", "Node.js", "Express", "PostgreSQL", "JWT", "Cybersource", "Docker"],
+      url: "https://tranki.care",
     },
     {
       // Proyecto bajo NDA: no nombrar al cliente ni detalles internos sin su autorización.
@@ -329,6 +386,23 @@ export const cv: CV = {
   // Títulos, autores, resúmenes y palabras clave tomados de las páginas oficiales
   // (Springer / IEEE Xplore). Los resúmenes en español son traducciones del original.
   publications: [
+    {
+      id: "dengue-deeponets",
+      title: "Spatio-Temporal DeepONets with Graph Neural Networks for Probabilistic Dengue Forecasting in Honduras",
+      year: 2026,
+      location: { es: "Maastricht, Países Bajos", en: "Maastricht, Netherlands" },
+      venue: "IJCNN 2026 (IEEE WCCI)",
+      venueFull: "2026 International Joint Conference on Neural Networks (IJCNN)",
+      publisher: "IEEE",
+      status: "published",
+      authors: ["Alejandro Jose Vargas Erazo", "Jason David Torres Banegas", "Luis Loo"],
+      doi: "10.1109/IJCNN69854.2026.11729621",
+      abstract: {
+        es: "Planteamos el pronóstico del dengue como un problema de aprendizaje de operadores que transforma historiales climático-epidemiológicos de varias semanas en pronósticos probabilísticos de incidencia. Proponemos una Deep Operator Network espacio-temporal potenciada con Graph Neural Networks (DeepONet-GNN) que se condiciona en el contexto geográfico, la escala poblacional, el horizonte de pronóstico y la fase estacional. Evaluado en 20 regiones sanitarias de Honduras (mayo de 2022 – abril de 2024), el modelo alcanza una alta precisión temporal (MAE = 113 casos, una mejora del 23.6 % sobre XGBoost) con una incertidumbre bien calibrada (cobertura del 82.9 % para un nivel nominal del 80 %, CRPS = 101.5). La validación cruzada dejando una región fuera demuestra capacidad de generalización espacial (correlación media de 0.76) e identifica los retos que plantean las regiones atípicas de alta incidencia. Un sistema de alerta temprana basado en probabilidades de excedencia alcanza una sensibilidad del 97.9 % y una especificidad del 97.4 % en la detección de brotes. Los resultados establecen el aprendizaje de operadores con codificación espacial basada en grafos como un marco eficaz para el pronóstico epidemiológico impulsado por el clima con cuantificación calibrada de la incertidumbre.",
+        en: "We formulate dengue forecasting as an operator learning problem mapping multi-week climate–epidemiological histories to probabilistic incidence forecasts. We propose a spatio-temporal Deep Operator Network enhanced with Graph Neural Networks (DeepONet-GNN) that conditions on geographic context, population scale, lead time, and seasonal phase. Evaluated across 20 sanitary regions in Honduras (May 2022–April 2024), the model achieves strong temporal accuracy (MAE = 113 cases, 23.6% improvement over XGBoost) with well-calibrated uncertainty (82.9% coverage at 80% nominal level, CRPS = 101.5). Leave-one-region-out cross-validation demonstrates spatial generalization capacity (mean correlation 0.76) while identifying challenges for high-incidence outlier regions. An exceedance-probability early warning system achieves 97.9% sensitivity and 97.4% specificity for outbreak detection. The results establish operator learning with graph-based spatial encoding as an effective framework for climate-driven epidemiological forecasting with calibrated uncertainty quantification.",
+      },
+      // TODO: palabras clave del autor (IEEE Xplore no las expone por API; copiarlas de la página del artículo).
+    },
     {
       id: "depression-audio-agents",
       title:
@@ -390,23 +464,6 @@ export const cv: CV = {
         es: ["TDAH", "Detección temprana", "Machine learning", "Naive Bayes", "Selección de características", "Datos educativos", "Análisis de encuestas", "Predicción diagnóstica", "Honduras", "Métodos de ensamble"],
         en: ["ADHD", "Early detection", "Machine learning", "Naive Bayes", "Feature selection", "Educational data", "Survey analysis", "Diagnostic prediction", "Honduras", "Ensemble methods"],
       },
-    },
-    {
-      id: "dengue-deeponets",
-      title: "Spatio-Temporal DeepONets with Graph Neural Networks for Probabilistic Dengue Forecasting in Honduras",
-      year: 2026,
-      location: { es: "Maastricht, Países Bajos", en: "Maastricht, Netherlands" },
-      venue: "IJCNN 2026 (IEEE WCCI)",
-      venueFull: "2026 International Joint Conference on Neural Networks (IJCNN)",
-      publisher: "IEEE",
-      status: "published",
-      authors: ["Alejandro Jose Vargas Erazo", "Jason David Torres Banegas", "Luis Loo"],
-      doi: "10.1109/IJCNN69854.2026.11729621",
-      abstract: {
-        es: "Planteamos el pronóstico del dengue como un problema de aprendizaje de operadores que transforma historiales climático-epidemiológicos de varias semanas en pronósticos probabilísticos de incidencia. Proponemos una Deep Operator Network espacio-temporal potenciada con Graph Neural Networks (DeepONet-GNN) que se condiciona en el contexto geográfico, la escala poblacional, el horizonte de pronóstico y la fase estacional. Evaluado en 20 regiones sanitarias de Honduras (mayo de 2022 – abril de 2024), el modelo alcanza una alta precisión temporal (MAE = 113 casos, una mejora del 23.6 % sobre XGBoost) con una incertidumbre bien calibrada (cobertura del 82.9 % para un nivel nominal del 80 %, CRPS = 101.5). La validación cruzada dejando una región fuera demuestra capacidad de generalización espacial (correlación media de 0.76) e identifica los retos que plantean las regiones atípicas de alta incidencia. Un sistema de alerta temprana basado en probabilidades de excedencia alcanza una sensibilidad del 97.9 % y una especificidad del 97.4 % en la detección de brotes. Los resultados establecen el aprendizaje de operadores con codificación espacial basada en grafos como un marco eficaz para el pronóstico epidemiológico impulsado por el clima con cuantificación calibrada de la incertidumbre.",
-        en: "We formulate dengue forecasting as an operator learning problem mapping multi-week climate–epidemiological histories to probabilistic incidence forecasts. We propose a spatio-temporal Deep Operator Network enhanced with Graph Neural Networks (DeepONet-GNN) that conditions on geographic context, population scale, lead time, and seasonal phase. Evaluated across 20 sanitary regions in Honduras (May 2022–April 2024), the model achieves strong temporal accuracy (MAE = 113 cases, 23.6% improvement over XGBoost) with well-calibrated uncertainty (82.9% coverage at 80% nominal level, CRPS = 101.5). Leave-one-region-out cross-validation demonstrates spatial generalization capacity (mean correlation 0.76) while identifying challenges for high-incidence outlier regions. An exceedance-probability early warning system achieves 97.9% sensitivity and 97.4% specificity for outbreak detection. The results establish operator learning with graph-based spatial encoding as an effective framework for climate-driven epidemiological forecasting with calibrated uncertainty quantification.",
-      },
-      // TODO: palabras clave del autor (IEEE Xplore no las expone por API; copiarlas de la página del artículo).
     },
     {
       id: "radicalization-agentic",
@@ -485,8 +542,7 @@ export const cv: CV = {
 
   languages: [
     { name: { es: "Español", en: "Spanish" }, level: { es: "Nativo", en: "Native" } },
-    // TODO: nivel de inglés (por ejemplo { es: "Avanzado (C1)", en: "Advanced (C1)" }).
-    { name: { es: "Inglés", en: "English" } },
+    { name: { es: "Inglés", en: "English" }, level: { es: "Conversacional", en: "Conversational" } },
   ],
 
   references: {
