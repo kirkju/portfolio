@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[lang]/cv">): Pro
 
 function Heading({ children }: { children: ReactNode }) {
   return (
-    <h2 className="mb-2.5 border-b border-[#dce3ee] pb-1 font-mono text-[7.5pt] font-medium tracking-[0.18em] text-[#0e7490] uppercase">
+    <h2 className="mb-2.5 break-after-avoid border-b border-[#dce3ee] pb-1 font-mono text-[7.5pt] font-medium tracking-[0.18em] text-[#0e7490] uppercase">
       {children}
     </h2>
   );
