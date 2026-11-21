@@ -31,7 +31,7 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
   const href = p.doi ? `https://doi.org/${p.doi}` : p.url;
 
   return (
-    <article className="rounded-2xl border border-border bg-bg p-6 shadow-card transition duration-300 ease-smooth hover:border-accent/40 hover:shadow-card-hover sm:p-8">
+    <article className="spotlight rounded-2xl border border-border bg-bg p-6 shadow-card transition duration-300 ease-smooth hover:border-accent/40 hover:shadow-card-hover sm:p-8">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <StatusBadge tone={p.status === "published" ? "success" : "warning"}>
           {t.publications.status[p.status]}

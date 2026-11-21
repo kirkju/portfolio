@@ -9,6 +9,7 @@ import { Hero } from "@/components/sections/hero";
 import { Projects } from "@/components/sections/projects";
 import { Publications } from "@/components/sections/publications";
 import { Skills } from "@/components/sections/skills";
+import { Spotlight } from "@/components/spotlight";
 import { ui } from "@/data/ui";
 import { isLocale } from "@/lib/i18n";
 import { personSchema } from "@/lib/schema";
@@ -39,6 +40,7 @@ export default async function HomePage({ params }: PageProps<"/[lang]">) {
         <Contact locale={lang} />
       </main>
       <Footer locale={lang} />
+      <Spotlight />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(personSchema(lang)) }} />
     </>
   );

@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 type SectionProps = {
@@ -11,6 +11,25 @@ type SectionProps = {
   children: ReactNode;
 };
 
+/**
+ * Título partido en palabras para que suban una tras otra al entrar con el scroll
+ * (`.split-heading` en globals.css). El texto y los espacios no cambian para
+ * lectores de pantalla ni al copiar.
+ */
+export function SplitWords({ text }: { text: string }) {
+  const words = text.split(" ");
+  return words.map((word, i) => (
+    <Fragment key={`${word}-${i}`}>
+      <span className="word-mask">
+        <span className="word" style={{ "--i": i } as CSSProperties}>
+          {word}
+        </span>
+      </span>
+      {i < words.length - 1 ? " " : null}
+    </Fragment>
+  ));
+}
+
 export function Section({ id, index, title, lead, className, children }: SectionProps) {
   const headingId = `${id}-heading`;
   return (
@@ -21,8 +40,8 @@ export function Section({ id, index, title, lead, className, children }: Section
             <span>{index}</span>
             <span className="reveal-line h-px w-10 bg-accent/50" />
           </p>
-          <h2 id={headingId} className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
-            {title}
+          <h2 id={headingId} className="split-heading mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
+            <SplitWords text={title} />
           </h2>
           {lead ? <p className="mt-4 text-base text-muted sm:text-lg">{lead}</p> : null}
         </header>

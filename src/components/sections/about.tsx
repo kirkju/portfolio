@@ -28,7 +28,7 @@ export function About({ locale }: { locale: Locale }) {
           ))}
         </div>
 
-        <aside aria-label={facts.label} className="reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-7">
+        <aside aria-label={facts.label} className="spotlight reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-7">
           <dl className="divide-y divide-border">
             <Fact label={facts.location}>{cv.profile.location[locale]}</Fact>
             {current ? (

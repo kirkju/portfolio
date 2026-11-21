@@ -9,7 +9,7 @@ export function Education({ locale }: { locale: Locale }) {
   return (
     <Section id={t.sectionIds.education} index="06" title={t.education.title}>
       <div className="grid gap-6 md:grid-cols-2">
-        <article className="reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
+        <article className="spotlight reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
           <h3 className="flex items-center gap-3 text-base font-semibold tracking-tight">
             <span className="grid size-10 place-items-center rounded-xl border border-border bg-surface-2 text-accent">
               <GraduationIcon className="size-5" />
@@ -27,7 +27,7 @@ export function Education({ locale }: { locale: Locale }) {
           </ol>
         </article>
 
-        <article className="reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
+        <article className="spotlight reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-8">
           <h3 className="flex items-center gap-3 text-base font-semibold tracking-tight">
             <span className="grid size-10 place-items-center rounded-xl border border-border bg-surface-2 text-accent">
               <BadgeCheckIcon className="size-5" />

@@ -5,9 +5,10 @@ CV digital y portafolio bilingüe (ES/EN) de Alejandro Vargas, Ingeniero en Sist
 **Sitio:** https://aledev-hsd0hhbzf6cvhrax.eastus2-01.azurewebsites.net/
 
 - Next.js 16 (App Router) como **export estático**, React 19, TypeScript 6 (strict) y Tailwind CSS 4.
-- Sin dependencias de UI adicionales: iconos SVG propios, i18n propio y animaciones solo con CSS.
+- Sin dependencias de UI adicionales: iconos SVG propios, i18n propio y animaciones con CSS y View Transitions nativas (sin librerías).
 - Tema oscuro por defecto con alternancia a claro. La preferencia se guarda y respeta `prefers-color-scheme`.
-- Movimiento sutil y como mejora progresiva (en `globals.css`): transiciones entre páginas con View Transitions (cambio de idioma y de tema), aparición, barra de progreso y línea de trayectoria ligadas al scroll, y micro-interacciones en botones, tarjetas, menú y resúmenes. Solo se anima `transform` y `opacity`, y con `prefers-reduced-motion: reduce` todo queda quieto. Sin soporte del navegador, el sitio funciona igual.
+- Proyectos en una galería compacta (`components/projects/project-gallery.tsx`): filtros por estado con transición, tarjetas cortas y el detalle completo en un `<dialog>` donde la imagen de la tarjeta se expande hasta el modal; anterior/siguiente con botones o con ← →, y cierre con Esc o clic fuera. En móvil, las tarjetas son un carrusel deslizable. Todo el texto de cada proyecto sigue en el HTML estático.
+- Movimiento como mejora progresiva (en `globals.css`): brillo que sigue al cursor en las tarjetas (`components/spotlight.tsx`), títulos que suben palabra por palabra, chips en cascada, anillo giratorio en la foto y aurora lenta en el hero, además de transiciones entre páginas con View Transitions (cambio de idioma y de tema), aparición, barra de progreso y línea de trayectoria ligadas al scroll, y micro-interacciones en botones, tarjetas, menú y resúmenes. Lo que se mueve anima sobre todo `transform` y `opacity`, y con `prefers-reduced-motion: reduce` todo queda quieto. Sin soporte del navegador, el sitio funciona igual.
 - SEO: metadatos por idioma con `hreflang`, imagen Open Graph generada con `next/og`, JSON-LD `Person`, `sitemap.xml` y `robots.txt`.
 
 ## Comandos

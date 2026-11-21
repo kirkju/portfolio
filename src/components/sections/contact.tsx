@@ -18,7 +18,7 @@ export function Contact({ locale }: { locale: Locale }) {
   return (
     <Section id={t.sectionIds.contact} index="07" title={t.contact.title} lead={t.contact.lead}>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-        <div className="reveal relative isolate overflow-hidden rounded-3xl border border-border bg-surface p-7 shadow-card sm:p-10">
+        <div className="spotlight reveal relative isolate overflow-hidden rounded-3xl border border-border bg-surface p-7 shadow-card sm:p-10">
           <div
             aria-hidden="true"
             className="absolute -top-24 -right-24 -z-10 size-80 bg-[radial-gradient(closest-side,var(--glow),transparent)]"
@@ -54,7 +54,7 @@ export function Contact({ locale }: { locale: Locale }) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card transition duration-300 ease-smooth hover:border-accent/50 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0"
+                className="spotlight group flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card transition duration-300 ease-smooth hover:border-accent/50 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0"
               >
                 <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-fg transition duration-300 ease-smooth group-hover:border-accent/40 group-hover:text-accent motion-safe:group-hover:scale-105">
                   <Icon className="size-5" />

@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 import Image from "next/image";
 import { ArrowRightIcon, DownloadIcon, GitHubIcon, LinkedInIcon, MapPinIcon } from "@/components/icons";
 import { Monogram } from "@/components/monogram";
@@ -29,8 +29,9 @@ export function Hero({ locale }: { locale: Locale }) {
     >
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10">
         <div className="bg-grid absolute inset-0 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_0%,#000_35%,transparent_100%)]" />
-        <div className="absolute -top-56 left-1/2 h-[44rem] w-[80rem] -translate-x-1/2 bg-[radial-gradient(closest-side,var(--glow),transparent)]" />
-        <div className="absolute top-16 -right-48 size-[30rem] bg-[radial-gradient(closest-side,var(--glow-accent),transparent)]" />
+        {/* Aurora: los dos resplandores derivan muy despacio (ver globals.css). */}
+        <div className="aurora-a absolute -top-56 left-1/2 h-[44rem] w-[80rem] -translate-x-1/2 bg-[radial-gradient(closest-side,var(--glow),transparent)]" />
+        <div className="aurora-b absolute top-16 -right-48 size-[30rem] bg-[radial-gradient(closest-side,var(--glow-accent),transparent)]" />
       </div>
 
       <div className="wrapper grid items-center gap-12 md:grid-cols-[minmax(0,1fr)_auto] lg:gap-20">
@@ -45,12 +46,18 @@ export function Hero({ locale }: { locale: Locale }) {
             </p>
           ) : null}
 
-          <h1
-            id="hero-heading"
-            className="rise mt-7 text-5xl font-semibold tracking-tighter sm:text-6xl lg:text-7xl"
-            style={delay(60)}
-          >
-            {profile.name}
+          {/* El nombre entra palabra por palabra, como si subiera desde una ranura. */}
+          <h1 id="hero-heading" className="hero-name mt-7 text-5xl font-semibold tracking-tighter sm:text-6xl lg:text-7xl">
+            {profile.name.split(" ").map((word, i, words) => (
+              <Fragment key={word}>
+                <span className="word-mask">
+                  <span className="word" style={delay(60 + i * 110)}>
+                    {word}
+                  </span>
+                </span>
+                {i < words.length - 1 ? " " : null}
+              </Fragment>
+            ))}
           </h1>
 
           <p className="rise mt-5 text-lg font-medium text-fg sm:text-2xl" style={delay(120)}>
@@ -112,7 +119,8 @@ export function Hero({ locale }: { locale: Locale }) {
 
         {hasPhoto ? (
           <div className="rise order-first md:order-none" style={delay(120)}>
-            <div className="relative size-28 rounded-full bg-linear-to-br from-accent/60 via-brand to-brand p-[3px] shadow-card sm:size-40 md:size-60 lg:size-72">
+            {/* Anillo de gradiente que gira lento alrededor de la foto. */}
+            <div className="photo-ring relative size-28 rounded-full bg-linear-to-br from-accent/60 via-brand to-brand p-[3px] shadow-card sm:size-40 md:size-60 lg:size-72">
               <Image
                 src={profile.photo}
                 alt={t.hero.photoAlt}

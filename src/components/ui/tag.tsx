@@ -28,7 +28,7 @@ export function TagList({ items, label, className }: { items: readonly string[];
   );
 }
 
-type Tone = "success" | "accent" | "warning" | "muted";
+export type Tone = "success" | "accent" | "warning" | "muted";
 
 const tones: Record<Tone, string> = {
   success: "bg-success",

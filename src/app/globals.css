@@ -27,6 +27,7 @@
   --card-shadow-hover: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 32px 64px -30px rgb(0 0 0 / 0.95);
   --accent-glow: 0 10px 28px -12px rgb(34 211 238 / 0.55);
   --header-shadow: 0 14px 32px -22px rgb(0 0 0 / 0.9);
+  --scrim: rgb(2 6 15 / 0.72);
 }
 
 [data-theme="light"] {
@@ -50,6 +51,7 @@
   --card-shadow-hover: 0 1px 2px rgb(11 27 51 / 0.06), 0 28px 56px -28px rgb(11 27 51 / 0.36);
   --accent-glow: 0 10px 26px -12px rgb(14 116 144 / 0.5);
   --header-shadow: 0 14px 32px -24px rgb(11 27 51 / 0.4);
+  --scrim: rgb(11 27 51 / 0.45);
 }
 
 /* Curva de movimiento común: arranca rápido y frena suave, como un objeto real. */
@@ -350,15 +352,18 @@
    La barra de navegación queda fija y la pastilla del idioma activo se desliza.
    Navegadores sin soporte navegan como siempre. */
 @media (prefers-reduced-motion: no-preference) {
+  /* `types: page` separa la navegación de las transiciones dentro de la página
+     (tema, filtros, detalle de proyecto), que usan el fundido normal. */
   @view-transition {
     navigation: auto;
+    types: page;
   }
 
-  ::view-transition-old(root) {
+  html:active-view-transition-type(page)::view-transition-old(root) {
     animation: vt-fade-out 0.18s ease-in both;
   }
 
-  ::view-transition-new(root) {
+  html:active-view-transition-type(page)::view-transition-new(root) {
     animation:
       vt-fade-in 0.36s var(--ease) both,
       vt-rise 0.36s var(--ease) both;
@@ -389,6 +394,430 @@
 
 .lang-active {
   view-transition-name: lang-active;
+}
+
+/* ---------- Galería de proyectos ----------
+   Filtros que reacomodan las tarjetas, detalle en <dialog> con la imagen que
+   "vuela" desde la tarjeta, y anterior/siguiente con deslizamiento. El estado de
+   cada transición lo pone project-gallery.tsx en <html data-vt="…">. */
+
+/* Durante un filtro, cada tarjeta visible y la pastilla tienen nombre propio. */
+html[data-vt="filter"] .project-list > li:not([hidden]) {
+  view-transition-name: var(--vt-name);
+  view-transition-class: project-card;
+}
+
+html[data-vt="filter"] .filter-pill {
+  view-transition-name: filter-pill;
+}
+
+.project-dialog[open] .dialog-panel {
+  view-transition-name: project-dialog;
+}
+
+.project-dialog[open] .dialog-media {
+  view-transition-name: project-media;
+}
+
+html:is([data-vt="next"], [data-vt="prev"]) .project-dialog[open] .dialog-body {
+  view-transition-name: project-dialog-body;
+}
+
+/* Con el detalle encima, la barra y el idioma no se capturan aparte: así el velo
+   oscuro los cubre durante toda la animación. */
+html:is([data-vt="open"], [data-vt="close"], [data-vt="next"], [data-vt="prev"]) :is(.site-header, .lang-active) {
+  view-transition-name: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  ::view-transition-group(.project-card) {
+    animation-duration: 0.5s;
+    animation-timing-function: var(--ease);
+  }
+
+  ::view-transition-new(.project-card):only-child {
+    animation: card-in 0.4s var(--ease) both;
+  }
+
+  ::view-transition-old(.project-card):only-child {
+    animation: card-out 0.22s ease-in both;
+  }
+
+  ::view-transition-group(filter-pill) {
+    animation-duration: 0.45s;
+    animation-timing-function: var(--ease);
+  }
+
+  ::view-transition-group(project-media) {
+    z-index: 2;
+    animation-duration: 0.55s;
+    animation-timing-function: var(--ease);
+  }
+
+  /* La imagen cambia de proporción (16:10 → 2:1) sin deformarse. */
+  ::view-transition-old(project-media),
+  ::view-transition-new(project-media) {
+    height: 100%;
+    object-fit: cover;
+    overflow: clip;
+  }
+
+  ::view-transition-group(project-dialog) {
+    animation-duration: 0.45s;
+    animation-timing-function: var(--ease);
+  }
+
+  ::view-transition-new(project-dialog):only-child {
+    animation: dialog-in 0.45s var(--ease) both;
+  }
+
+  ::view-transition-old(project-dialog):only-child {
+    animation: dialog-out 0.25s ease-in both;
+  }
+
+  html[data-vt="next"]::view-transition-old(project-dialog-body) {
+    animation: slide-out-left 0.25s ease-in both;
+  }
+
+  html[data-vt="next"]::view-transition-new(project-dialog-body) {
+    animation: slide-in-right 0.45s var(--ease) both;
+  }
+
+  html[data-vt="prev"]::view-transition-old(project-dialog-body) {
+    animation: slide-out-right 0.25s ease-in both;
+  }
+
+  html[data-vt="prev"]::view-transition-new(project-dialog-body) {
+    animation: slide-in-left 0.45s var(--ease) both;
+  }
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes card-out {
+  to {
+    opacity: 0;
+    scale: 0.9;
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    translate: 0 1.5rem;
+    scale: 0.96;
+  }
+}
+
+@keyframes dialog-out {
+  to {
+    opacity: 0;
+    translate: 0 1rem;
+    scale: 0.97;
+  }
+}
+
+@keyframes slide-out-left {
+  to {
+    opacity: 0;
+    translate: -2.5rem 0;
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    translate: 2.5rem 0;
+  }
+}
+
+@keyframes slide-out-right {
+  to {
+    opacity: 0;
+    translate: 2.5rem 0;
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    translate: -2.5rem 0;
+  }
+}
+
+/* Detalle sin View Transitions (o con movimiento reducido): el velo se funde y el
+   panel sube con @starting-style. Durante una View Transition se apagan para no
+   animar dos veces. */
+html {
+  scrollbar-gutter: stable;
+}
+
+html:has(.project-dialog[open]) {
+  overflow: hidden;
+}
+
+.project-dialog {
+  transition:
+    display 0.3s allow-discrete,
+    overlay 0.3s allow-discrete;
+}
+
+.project-dialog::backdrop {
+  background-color: transparent;
+  transition:
+    background-color 0.3s ease,
+    display 0.3s allow-discrete,
+    overlay 0.3s allow-discrete;
+}
+
+.project-dialog[open]::backdrop {
+  background-color: var(--scrim);
+}
+
+.project-dialog .dialog-panel {
+  opacity: 0;
+  transition:
+    opacity 0.25s ease,
+    translate 0.4s var(--ease),
+    scale 0.4s var(--ease);
+}
+
+.project-dialog[open] .dialog-panel {
+  opacity: 1;
+}
+
+@starting-style {
+  .project-dialog[open]::backdrop {
+    background-color: transparent;
+  }
+
+  .project-dialog[open] .dialog-panel {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .project-dialog .dialog-panel {
+    translate: 0 1.5rem;
+    scale: 0.97;
+  }
+
+  .project-dialog[open] .dialog-panel {
+    translate: 0 0;
+    scale: 1;
+  }
+
+  @starting-style {
+    .project-dialog[open] .dialog-panel {
+      translate: 0 1.5rem;
+      scale: 0.97;
+    }
+  }
+}
+
+html[data-vt] .project-dialog,
+html[data-vt] .project-dialog::backdrop,
+html[data-vt] .project-dialog .dialog-panel {
+  transition: none;
+}
+
+/* ---------- Títulos que suben palabra por palabra ---------- */
+.word-mask {
+  display: inline-block;
+  /* `clip` y no `hidden`: así no es un contenedor de scroll y no rompe view(). */
+  overflow: clip;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+  vertical-align: bottom;
+}
+
+.word {
+  display: inline-block;
+}
+
+@keyframes word-up {
+  from {
+    translate: 0 110%;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero: al cargar, una palabra tras otra. */
+  .hero-name .word {
+    animation: word-up 0.9s var(--ease) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    /* Títulos de sección: al entrar con el scroll, escalonados por palabra. */
+    .split-heading {
+      view-timeline: --heading block;
+    }
+
+    .split-heading .word {
+      animation: word-up var(--ease) both;
+      animation-timeline: --heading;
+      animation-range: cover calc(var(--i, 0) * 3%) cover calc(22% + var(--i, 0) * 3%);
+    }
+
+    /* Habilidades: los chips aparecen en cascada mientras entra su tarjeta. */
+    .skill-card {
+      view-timeline: --skill block;
+    }
+
+    .skill-card .chip {
+      animation: chip-in var(--ease) both;
+      animation-timeline: --skill;
+      animation-range: entry calc(min(var(--i, 0), 10) * 5%) entry calc(50% + min(var(--i, 0), 10) * 5%);
+    }
+
+    /* Carrusel móvil: las tarjetas que se van por los lados se encogen un poco. */
+    @media (width < 48rem) {
+      .carousel-card {
+        animation: carousel-focus linear both;
+        animation-timeline: view(inline);
+      }
+    }
+  }
+
+  /* Anillo de gradiente alrededor de la foto y aurora del fondo del hero. */
+  .photo-ring::before {
+    animation: spin 14s linear infinite;
+  }
+
+  .aurora-a {
+    animation: drift-a 18s ease-in-out infinite alternate;
+  }
+
+  .aurora-b {
+    animation: drift-b 22s ease-in-out infinite alternate;
+  }
+
+  .swipe-hint {
+    animation: swipe 1.6s var(--ease) 3;
+  }
+}
+
+@keyframes chip-in {
+  from {
+    translate: 0 0.75rem;
+    scale: 0.9;
+  }
+}
+
+@keyframes carousel-focus {
+  0%,
+  100% {
+    scale: 0.93;
+  }
+  30%,
+  70% {
+    scale: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 1turn;
+  }
+}
+
+@keyframes drift-a {
+  from {
+    translate: -50% 0;
+    scale: 1;
+  }
+  to {
+    translate: -44% 2.5rem;
+    scale: 1.08;
+  }
+}
+
+@keyframes drift-b {
+  from {
+    translate: 0 0;
+    scale: 1;
+  }
+  to {
+    translate: -4rem 3rem;
+    scale: 1.2;
+  }
+}
+
+@keyframes swipe {
+  50% {
+    translate: 0.375rem 0;
+  }
+}
+
+.photo-ring {
+  overflow: hidden;
+  isolation: isolate;
+  background: none;
+}
+
+.photo-ring::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  z-index: -1;
+  background: conic-gradient(var(--accent), transparent 22%, var(--brand) 50%, transparent 78%, var(--accent));
+}
+
+/* ---------- Brillo que sigue al cursor (ver components/spotlight.tsx) ---------- */
+@media (hover: hover) {
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+
+  /* Resplandor suave dentro de la tarjeta. */
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    background: radial-gradient(
+      22rem circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--accent) 10%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  /* El borde se ilumina cerca del cursor. */
+  .spotlight::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: radial-gradient(
+      14rem circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in oklab, var(--accent) 70%, transparent),
+      transparent 70%
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .spotlight:hover::before,
+  .spotlight:hover::after {
+    opacity: 1;
+  }
 }
 
 /* Al imprimir (o generar el PDF) siempre se usa el tema claro, sobre papel blanco. */
