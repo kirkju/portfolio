@@ -45,7 +45,7 @@ function Sheet({ locale }: { locale: Locale }) {
   const statusLabel = t.projects.status;
 
   return (
-    <article className="mx-auto w-[210mm] bg-white p-[13mm] text-[9pt] leading-[1.45] text-[#0b1b33] shadow-2xl print:w-auto print:p-0 print:shadow-none">
+    <article className="mx-auto w-[210mm] bg-white p-[13mm] text-[9pt] leading-[1.4] text-[#0b1b33] shadow-2xl print:w-auto print:p-0 print:shadow-none">
       <header className="flex items-center gap-[6mm] rounded-xl bg-[#0b2a5e] px-[8mm] py-[6.5mm] text-white [print-color-adjust:exact]">
         {publicFileExists(profile.photo) ? (
           <Image

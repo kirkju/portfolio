@@ -133,6 +133,50 @@ export const cv: CV = {
         ],
       },
       stack: ["Rust", "Actix-web", "PostgreSQL", "SQLx", "HTMX", "Handlebars", "Docker", "OpenTelemetry"],
+      url: "https://unified.circlemsp.com",
+    },
+    {
+      // Datos tomados de los repositorios y del informe del proyecto (13-oct-2026).
+      // NENO lo desarrolla otro equipo: aquí se describe su integración con la tienda.
+      id: "la-universal",
+      title: { es: "Tienda en Línea La Universal", en: "La Universal Online Store" },
+      client: { es: "ACOSA", en: "ACOSA" },
+      year: 2026,
+      status: "production",
+      image: "/projects/la-universal.svg",
+      imageAlt: { es: "", en: "" },
+      context: {
+        es: "La Universal necesitaba una tienda en línea propia para su catálogo de tecnología y hogar, alimentada con los artículos, precios y existencias de su ERP, y un panel para administrarla.",
+        en: "La Universal needed its own online store for its technology and home catalog, fed with the items, prices, and stock from its ERP, plus an admin panel to run it.",
+      },
+      solution: {
+        es: "Tienda y panel de administración en Next.js sobre una API propia en Node.js (Fastify) y PostgreSQL, con buscador tolerante a errores, montos calculados en el servidor y sincronización con el ERP que se simula y se puede revertir. Integra a NENO, el asistente virtual de la tienda, que guía al cliente y solo ejecuta acciones de una lista cerrada, sin tocar precios ni confirmar pedidos.",
+        en: "A storefront and admin panel in Next.js on a custom Node.js (Fastify) and PostgreSQL API, with typo-tolerant search, server-computed amounts, and an ERP sync that can be dry-run and rolled back. It integrates NENO, the store's virtual assistant, which guides customers and only runs actions from a closed list, never touching prices or confirming orders.",
+      },
+      result: {
+        es: "En producción y abierta al público desde octubre de 2026, hoy en launiversal.com.ni, con el catálogo sincronizado con el ERP y más de 2600 pruebas automáticas en el backend.",
+        en: "In production and open to the public since October 2026, now at launiversal.com.ni, with the catalog synced from the ERP and more than 2,600 automated backend tests.",
+      },
+      features: {
+        es: [
+          "Buscador con sugerencias y tolerancia a errores",
+          "Sincronización con el ERP: simulación, frenos y reversión",
+          "Asistente NENO con acciones de lista cerrada",
+          "Transferencia con comprobante o pago al retirar",
+          "Cupones, campañas y correos automáticos",
+          "Panel con permisos por rol y auditoría",
+        ],
+        en: [
+          "Search with suggestions and typo tolerance",
+          "ERP sync with dry runs, safety brakes, and rollback",
+          "NENO assistant with a closed list of actions",
+          "Bank transfer with receipt or pay at pickup",
+          "Coupons, campaigns, and automated emails",
+          "Role-based admin panel with audit trail",
+        ],
+      },
+      stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "Fastify", "PostgreSQL", "Vitest", "Playwright", "Docker", "AWS"],
+      url: "https://www.launiversal.com.ni",
     },
     {
       // Proyecto confidencial: no nombrar el producto, la empresa, sus proveedores ni su infraestructura.
@@ -179,30 +223,45 @@ export const cv: CV = {
       stack: ["Python", "FastAPI", "PostgreSQL", "React", "TypeScript", "Claude API", "Docker", "Playwright"],
     },
     {
-      id: "ferrexpress-ventas",
-      title: { es: "Sitio Web de Ventas Ferrexpress", en: "Ferrexpress Sales Website" },
+      // Une el sitio de ventas y la webapp de fletes (antes eran dos tarjetas); el ERP va aparte.
+      id: "ferrexpress-ventas-fletes",
+      title: { es: "Plataforma Web de Ventas y Fletes Ferrexpress", en: "Ferrexpress Sales & Freight Web Platform" },
       client: { es: "Ferrexpress", en: "Ferrexpress" },
       year: 2024,
-      status: "production",
-      image: "/projects/ferrexpress-ventas.svg",
+      status: "delivered",
+      image: "/projects/ferrexpress-ventas-fletes.svg",
       imageAlt: { es: "", en: "" },
       context: {
-        es: "Ferrexpress necesitaba un canal de ventas en línea que también integrara la gestión de productos y la atención al cliente.",
-        en: "Ferrexpress needed an online sales channel that also brought together product management and customer service.",
+        es: "Ferrexpress necesitaba un canal de ventas en línea que integrara la gestión de productos y la atención al cliente, y coordinar su operación logística: rutas, conductores, vehículos y el seguimiento de cada entrega.",
+        en: "Ferrexpress needed an online sales channel that brought together product management and customer service, and a way to coordinate its logistics: routes, drivers, vehicles, and tracking for every delivery.",
       },
       solution: {
-        es: "Plataforma web con catálogo interactivo, carrito de compras con pago en línea mediante Stripe y herramientas de seguimiento de pedidos y gestión administrativa, construida con Blazor y ASP.NET Core sobre SQL Server en Azure.",
-        en: "A web platform with an interactive catalog, a shopping cart with online payments through Stripe, and order-tracking and back-office tools, built with Blazor and ASP.NET Core on SQL Server in Azure.",
+        es: "Sitio de ventas con catálogo interactivo, pago en línea con Stripe y seguimiento de pedidos, y gestión de fletes con rutas, conductores, vehículos y entregas en tiempo real (SignalR y Google Maps), en Blazor y ASP.NET Core sobre SQL Server en Azure.",
+        en: "A sales site with an interactive catalog, Stripe online payments, and order tracking, plus freight management with routes, drivers, vehicles, and real-time deliveries (SignalR and Google Maps), built with Blazor and ASP.NET Core on SQL Server in Azure.",
       },
       result: {
-        es: "En producción: ventas, catálogo, pedidos y administración funcionan en una sola plataforma.",
-        en: "In production: sales, catalog, orders, and administration run on a single platform.",
+        es: "Entregada: ventas, catálogo, pedidos y fletes centralizados, con informes de rendimiento y costos.",
+        en: "Delivered: sales, catalog, orders, and freight in one place, with performance and cost reports.",
       },
       features: {
-        es: ["Catálogo interactivo", "Pago en línea", "Seguimiento de pedidos", "Gestión administrativa"],
-        en: ["Interactive catalog", "Online payments", "Order tracking", "Back-office management"],
+        es: [
+          "Catálogo interactivo",
+          "Pago en línea con Stripe",
+          "Seguimiento de pedidos",
+          "Creación y control de fletes",
+          "Rutas, conductores y vehículos",
+          "Seguimiento de entregas en tiempo real",
+        ],
+        en: [
+          "Interactive catalog",
+          "Stripe online payments",
+          "Order tracking",
+          "Freight creation and control",
+          "Routes, drivers, and vehicles",
+          "Real-time delivery tracking",
+        ],
       },
-      stack: ["Blazor", "ASP.NET Core", "SQL Server", "Azure", "Stripe API"],
+      stack: ["Blazor", "ASP.NET Core", "SQL Server", "Azure", "Stripe API", "SignalR", "Google Maps API"],
     },
     {
       id: "asegure-nominas",
@@ -229,32 +288,6 @@ export const cv: CV = {
         en: ["Batch processing", "Automated calculations", "ERP integration", "BI reports"],
       },
       stack: ["C#", "SQL Server", "Entity Framework", "Azure SQL", "Power BI"],
-    },
-    {
-      id: "ferrexpress-fletes",
-      title: { es: "WebApp de Gestión de Fletes Ferrexpress", en: "Ferrexpress Freight Management Web App" },
-      client: { es: "Ferrexpress", en: "Ferrexpress" },
-      year: 2024,
-      status: "production",
-      image: "/projects/ferrexpress-fletes.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "La operación logística de Ferrexpress requería coordinar rutas, conductores y vehículos, y dar seguimiento a cada entrega.",
-        en: "Ferrexpress's logistics operation needed to coordinate routes, drivers, and vehicles, and to track every delivery.",
-      },
-      solution: {
-        es: "Aplicación web para crear y controlar fletes, gestionar rutas y asignar conductores y vehículos, con seguimiento de entregas en tiempo real mediante SignalR y Google Maps.",
-        en: "A web app to create and control freight orders, manage routes, and assign drivers and vehicles, with real-time delivery tracking through SignalR and Google Maps.",
-      },
-      result: {
-        es: "En producción: centraliza la operación de fletes y genera informes de rendimiento y costos.",
-        en: "In production: it centralizes freight operations and produces performance and cost reports.",
-      },
-      features: {
-        es: ["Control y creación de fletes", "Gestión de rutas", "Seguimiento en tiempo real", "Reportes de rendimiento"],
-        en: ["Freight creation and control", "Route management", "Real-time tracking", "Performance reports"],
-      },
-      stack: ["Blazor", "ASP.NET Core", "SQL Server", "Azure", "SignalR", "Google Maps API"],
     },
     {
       id: "ferrexpress-erp",
