@@ -16,8 +16,9 @@ export function LanguageSwitch({ locale, className }: { locale: Locale; classNam
             lang={code}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "rounded-full px-2.5 py-1 font-mono text-xs font-medium transition-colors",
-              active ? "bg-surface-2 text-heading" : "text-muted hover:text-fg",
+              "rounded-full px-2.5 py-1 font-mono text-xs font-medium transition-colors duration-200",
+              // `lang-active` da nombre a la pastilla: al cambiar de idioma se desliza a su nuevo lugar.
+              active ? "lang-active bg-surface-2 text-heading" : "text-muted hover:bg-surface-2/60 hover:text-fg",
             )}
           >
             {code.toUpperCase()}

@@ -33,6 +33,7 @@ export function Experience({ locale }: { locale: Locale }) {
               </p>
 
               <div className={cn("relative border-l border-border pl-8 md:pl-10", !isLast && "pb-14")}>
+                <span aria-hidden="true" className="timeline-fill absolute top-0 -left-px h-full w-px bg-accent/70" />
                 <span
                   aria-hidden="true"
                   className={cn(

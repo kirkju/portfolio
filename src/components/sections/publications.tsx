@@ -31,7 +31,7 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
   const href = p.doi ? `https://doi.org/${p.doi}` : p.url;
 
   return (
-    <article className="rounded-2xl border border-border bg-bg p-6 shadow-card transition-colors duration-300 hover:border-accent/40 sm:p-8">
+    <article className="rounded-2xl border border-border bg-bg p-6 shadow-card transition duration-300 ease-smooth hover:border-accent/40 hover:shadow-card-hover sm:p-8">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <StatusBadge tone={p.status === "published" ? "success" : "warning"}>
           {t.publications.status[p.status]}
@@ -69,7 +69,7 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg shadow-card transition-colors hover:border-accent/60 hover:text-heading"
+          className="mt-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg shadow-card transition duration-200 ease-smooth hover:border-accent/60 hover:text-heading hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.98]"
         >
           {p.doi ? (
             <>
@@ -79,7 +79,7 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
           ) : (
             t.publications.link
           )}
-          <ExternalLinkIcon className="size-4 shrink-0" />
+          <ExternalLinkIcon className="nudge-xy size-4 shrink-0" />
           <span className="sr-only">{t.actions.newTab}</span>
         </a>
       ) : null}

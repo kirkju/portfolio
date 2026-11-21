@@ -18,7 +18,7 @@ export function Footer({ locale }: { locale: Locale }) {
           <p>{t.footer.builtWith}</p>
           <a href={`#${t.sectionIds.home}`} className="inline-flex items-center gap-1.5 rounded-md text-fg transition-colors hover:text-accent">
             {t.actions.backToTop}
-            <ArrowUpIcon className="size-4" />
+            <ArrowUpIcon className="nudge-up size-4" />
           </a>
         </div>
       </div>

@@ -19,7 +19,7 @@ export function Section({ id, index, title, lead, className, children }: Section
         <header className="reveal mb-10 max-w-2xl sm:mb-14">
           <p className="flex items-center gap-3 font-mono text-xs tracking-[0.2em] text-accent" aria-hidden="true">
             <span>{index}</span>
-            <span className="h-px w-10 bg-border" />
+            <span className="reveal-line h-px w-10 bg-accent/50" />
           </p>
           <h2 id={headingId} className="mt-4 text-3xl font-semibold tracking-tight sm:text-4xl">
             {title}

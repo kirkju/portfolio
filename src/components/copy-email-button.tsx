@@ -48,7 +48,12 @@ export function CopyEmailButton({ email, labels }: CopyEmailButtonProps) {
   return (
     <>
       <button type="button" onClick={handleClick} className={buttonClasses("secondary")}>
-        {state === "copied" ? <CheckIcon className="size-4 text-success" /> : <CopyIcon className="size-4" />}
+        {/* La palomita aparece con un pequeño rebote al copiar. */}
+        {state === "copied" ? (
+          <CheckIcon className="size-4 text-success transition duration-300 ease-smooth starting:opacity-0 motion-safe:starting:scale-50" />
+        ) : (
+          <CopyIcon className="size-4" />
+        )}
         <span>{text}</span>
         <span className="sr-only">{state === "idle" ? `: ${email}` : ""}</span>
       </button>

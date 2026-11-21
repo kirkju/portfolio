@@ -70,13 +70,13 @@ export function Hero({ locale }: { locale: Locale }) {
           <div className="rise mt-9 flex flex-wrap gap-3" style={delay(240)}>
             <ButtonLink href={`#${t.sectionIds.projects}`}>
               {t.actions.viewProjects}
-              <ArrowRightIcon className="size-4" />
+              <ArrowRightIcon className="nudge-x size-4" />
             </ButtonLink>
             <ButtonLink href={`#${t.sectionIds.contact}`} variant="secondary">
               {t.actions.contact}
             </ButtonLink>
             <ButtonLink href={profile.cvPdf[locale]} download variant="ghost">
-              <DownloadIcon className="size-4" />
+              <DownloadIcon className="nudge-y size-4" />
               {t.actions.downloadCv}
             </ButtonLink>
           </div>
@@ -97,7 +97,7 @@ export function Hero({ locale }: { locale: Locale }) {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex size-9 items-center justify-center rounded-full text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                    className="inline-flex size-9 items-center justify-center rounded-full text-muted transition duration-200 ease-smooth hover:bg-surface-2 hover:text-fg motion-safe:hover:-translate-y-0.5 motion-safe:active:scale-95"
                   >
                     <Icon className="size-[1.125rem]" />
                     <span className="sr-only">

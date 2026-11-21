@@ -21,14 +21,14 @@ const narrative = ["context", "solution", "result"] as const;
 function ProjectCard({ project, locale }: { project: Project; locale: Locale }) {
   const t = ui[locale];
   return (
-    <article className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-card transition duration-300 hover:border-accent/50 motion-safe:hover:-translate-y-1">
+    <article className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface shadow-card transition duration-300 ease-smooth hover:border-accent/50 hover:shadow-card-hover motion-safe:hover:-translate-y-1">
       <div className="relative aspect-[16/10] overflow-hidden border-b border-border bg-surface-2">
         <Image
           src={project.image}
           alt={project.imageAlt[locale]}
           fill
           sizes="(min-width: 1152px) 544px, (min-width: 768px) 50vw, 100vw"
-          className="object-cover transition duration-500 motion-safe:group-hover:scale-[1.03]"
+          className="object-cover transition duration-700 ease-smooth motion-safe:group-hover:scale-[1.04]"
         />
       </div>
 
@@ -72,7 +72,7 @@ function ProjectCard({ project, locale }: { project: Project; locale: Locale }) 
           {project.url ? (
             <a href={project.url} target="_blank" rel="noopener noreferrer" className={buttonClasses("secondary", "sm", "self-start")}>
               {t.projects.visit}
-              <ExternalLinkIcon className="size-4" />
+              <ExternalLinkIcon className="nudge-xy size-4" />
               <span className="sr-only">{t.actions.newTab}</span>
             </a>
           ) : null}

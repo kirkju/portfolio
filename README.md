@@ -1,12 +1,13 @@
 # Alejandro Vargas — CV digital
 
-CV digital y portafolio bilingüe (ES/EN) de Alejandro Vargas, Ingeniero de Software.
+CV digital y portafolio bilingüe (ES/EN) de Alejandro Vargas, Ingeniero en Sistemas.
 
 **Sitio:** https://aledev-hsd0hhbzf6cvhrax.eastus2-01.azurewebsites.net/
 
 - Next.js 16 (App Router) como **export estático**, React 19, TypeScript 6 (strict) y Tailwind CSS 4.
 - Sin dependencias de UI adicionales: iconos SVG propios, i18n propio y animaciones solo con CSS.
 - Tema oscuro por defecto con alternancia a claro. La preferencia se guarda y respeta `prefers-color-scheme`.
+- Movimiento sutil y como mejora progresiva (en `globals.css`): transiciones entre páginas con View Transitions (cambio de idioma y de tema), aparición, barra de progreso y línea de trayectoria ligadas al scroll, y micro-interacciones en botones, tarjetas, menú y resúmenes. Solo se anima `transform` y `opacity`, y con `prefers-reduced-motion: reduce` todo queda quieto. Sin soporte del navegador, el sitio funciona igual.
 - SEO: metadatos por idioma con `hreflang`, imagen Open Graph generada con `next/og`, JSON-LD `Person`, `sitemap.xml` y `robots.txt`.
 
 ## Comandos

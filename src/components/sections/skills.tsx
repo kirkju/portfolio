@@ -36,7 +36,7 @@ export function Skills({ locale }: { locale: Locale }) {
             <li key={group.id} className={cn("reveal flex", spans[group.id])}>
               <article
                 className={cn(
-                  "relative w-full overflow-hidden rounded-2xl border bg-surface p-6 shadow-card transition-colors duration-300 sm:p-7",
+                  "relative w-full overflow-hidden rounded-2xl border bg-surface p-6 shadow-card transition duration-300 ease-smooth hover:shadow-card-hover sm:p-7",
                   featured
                     ? "border-accent/40 bg-[radial-gradient(120%_120%_at_100%_0%,var(--glow-accent),transparent_60%)]"
                     : "border-border hover:border-accent/40",

@@ -54,16 +54,16 @@ export function Contact({ locale }: { locale: Locale }) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card transition-colors hover:border-accent/50"
+                className="group flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card transition duration-300 ease-smooth hover:border-accent/50 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0"
               >
-                <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-fg transition-colors group-hover:text-accent">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-fg transition duration-300 ease-smooth group-hover:border-accent/40 group-hover:text-accent motion-safe:group-hover:scale-105">
                   <Icon className="size-5" />
                 </span>
                 <span className="min-w-0">
                   <span className="block font-medium text-heading">{name}</span>
                   <span className="block truncate text-sm text-muted">{hint}</span>
                 </span>
-                <ExternalLinkIcon className="ml-auto size-4 shrink-0 text-muted transition-colors group-hover:text-accent" />
+                <ExternalLinkIcon className="nudge-xy ml-auto size-4 shrink-0 text-muted group-hover:text-accent" />
                 <span className="sr-only">{t.actions.newTab}</span>
               </a>
             </li>

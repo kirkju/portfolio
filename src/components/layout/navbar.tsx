@@ -24,13 +24,15 @@ export function Navbar({ locale }: { locale: Locale }) {
   const cvHref = cv.profile.cvPdf[locale];
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-bg/70 backdrop-blur-md">
+    <header className="site-header fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-bg/70 backdrop-blur-md">
+      {/* Progreso de lectura: solo en navegadores con animaciones ligadas al scroll. */}
+      <span aria-hidden="true" className="scroll-progress absolute inset-x-0 -bottom-px h-px bg-accent/80" />
       <div className="wrapper relative flex h-16 items-center justify-between gap-4">
         <a
           href={`#${t.sectionIds.home}`}
           className="group flex shrink-0 items-center gap-2.5 rounded-md font-mono text-sm font-semibold tracking-tight whitespace-nowrap text-heading"
         >
-          <span className="grid size-8 place-items-center rounded-lg bg-brand ring-1 ring-white/10 transition-shadow group-hover:ring-accent/60">
+          <span className="grid size-8 place-items-center rounded-lg bg-brand ring-1 ring-white/10 transition duration-300 ease-smooth group-hover:ring-accent/60 motion-safe:group-hover:-rotate-6 motion-safe:group-active:scale-90">
             <Monogram className="size-6" />
           </span>
           {/* Entre 1280 y 1535 px la barra muestra todos los enlaces: ahí basta el monograma. */}
@@ -43,7 +45,7 @@ export function Navbar({ locale }: { locale: Locale }) {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  className="rounded-full px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+                  className="rounded-full px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors duration-200 hover:bg-surface-2 hover:text-fg active:bg-surface-2/60"
                 >
                   {link.label}
                 </a>
@@ -55,8 +57,9 @@ export function Navbar({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-1.5 sm:gap-2">
           <LanguageSwitch locale={locale} className="hidden sm:flex" />
           <ThemeToggle labels={t.theme} />
-          <a href={cvHref} download className={buttonClasses("primary", "sm", "hidden sm:inline-flex")}>
-            <DownloadIcon className="size-4" />
+          {/* `max-sm:hidden` y no `hidden sm:inline-flex`: el `inline-flex` del botón le ganaría a `hidden`. */}
+          <a href={cvHref} download className={buttonClasses("primary", "sm", "max-sm:hidden")}>
+            <DownloadIcon className="nudge-y size-4" />
             {t.actions.downloadCv}
           </a>
           <MobileMenu
@@ -66,7 +69,7 @@ export function Navbar({ locale }: { locale: Locale }) {
               <>
                 <LanguageSwitch locale={locale} className="sm:hidden" />
                 <a href={cvHref} download className={buttonClasses("primary", "sm", "sm:hidden")}>
-                  <DownloadIcon className="size-4" />
+                  <DownloadIcon className="nudge-y size-4" />
                   {t.actions.downloadCv}
                 </a>
               </>

@@ -238,7 +238,7 @@ export default async function CvPage({ params }: PageProps<"/[lang]/cv">) {
           {t.back}
         </a>
         <a href={cv.profile.cvPdf[lang]} download className={buttonClasses("primary", "sm")}>
-          <DownloadIcon className="size-4" />
+          <DownloadIcon className="nudge-y size-4" />
           {t.download}
         </a>
       </div>
