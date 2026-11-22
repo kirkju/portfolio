@@ -5,10 +5,10 @@ CV digital y portafolio bilingüe (ES/EN) de Alejandro Vargas, Ingeniero en Sist
 **Sitio:** https://aledev-hsd0hhbzf6cvhrax.eastus2-01.azurewebsites.net/
 
 - Next.js 16 (App Router) como **export estático**, React 19, TypeScript 6 (strict) y Tailwind CSS 4.
-- Sin dependencias de UI adicionales: iconos SVG propios, i18n propio y animaciones con CSS y View Transitions nativas (sin librerías).
+- Casi sin dependencias: iconos SVG propios, i18n propio y una sola librería, [Motion](https://motion.dev), para las animaciones que necesitan física, layout o gestos. El resto del movimiento es CSS y View Transitions nativas.
 - Tema oscuro por defecto con alternancia a claro. La preferencia se guarda y respeta `prefers-color-scheme`.
-- Proyectos en una galería compacta (`components/projects/project-gallery.tsx`): filtros por estado con transición, tarjetas cortas y el detalle completo en un `<dialog>` donde la imagen de la tarjeta se expande hasta el modal; anterior/siguiente con botones o con ← →, y cierre con Esc o clic fuera. En móvil, las tarjetas son un carrusel deslizable. Todo el texto de cada proyecto sigue en el HTML estático.
-- Movimiento como mejora progresiva (en `globals.css`): brillo que sigue al cursor en las tarjetas (`components/spotlight.tsx`), títulos que suben palabra por palabra, chips en cascada, anillo giratorio en la foto y aurora lenta en el hero, además de transiciones entre páginas con View Transitions (cambio de idioma y de tema), aparición, barra de progreso y línea de trayectoria ligadas al scroll, y micro-interacciones en botones, tarjetas, menú y resúmenes. Lo que se mueve anima sobre todo `transform` y `opacity`, y con `prefers-reduced-motion: reduce` todo queda quieto. Sin soporte del navegador, el sitio funciona igual.
+- Proyectos en una galería compacta (`components/projects/project-gallery.tsx`): filtros por estado con una pastilla que se desliza y tarjetas que se recolocan, y el detalle completo en un `<dialog>` al que la tarjeta "crece" llevándose su imagen y su título; anterior/siguiente con botones, con ← → o deslizando en táctil, y cierre con Esc o clic fuera. En móvil, las tarjetas son un carrusel deslizable. Todo el texto de cada proyecto sigue en el HTML estático.
+- Movimiento con un sistema propio (ver [Movimiento](#movimiento)): entrada coreografiada del hero, reveals de scroll que ocurren una sola vez, línea de trayectoria que se dibuja al leer, indicador de sección activa, barra de progreso y micro-interacciones. Solo se animan `transform` y `opacity`, el contenido es visible sin JavaScript y se respeta `prefers-reduced-motion`.
 - SEO: metadatos por idioma con `hreflang`, imagen Open Graph generada con `next/og`, JSON-LD `Person`, `sitemap.xml` y `robots.txt`.
 
 ## Comandos
@@ -44,12 +44,13 @@ src/
     icon.svg, favicon.ico, apple-icon.png
     globals.css                Tokens de color, tipografía y animaciones
   assets/fonts/                Geist en TTF para la imagen Open Graph
-  components/                  layout/ (navbar, tema, idioma), sections/ (una por sección), ui/
+  components/                  layout/ (navbar, tema, idioma), sections/ (una por sección), ui/,
+                               motion/ (primitivas y piezas de movimiento), projects/ (galería)
   data/
     cv.ts                      ← Todo el contenido del CV (ES y EN)
     ui.ts                      Textos de la interfaz
     types.ts                   Tipos del contenido
-  lib/                         i18n, tema, JSON-LD, imagen OG y utilidades
+  lib/                         i18n, tema, JSON-LD, imagen OG, utilidades y tokens de movimiento (motion.ts)
 ```
 
 ## Cómo editar el contenido
@@ -58,6 +59,7 @@ Todo el CV está en **`src/data/cv.ts`**. No hace falta tocar los componentes.
 
 - Cada texto traducible es un objeto `{ es: "…", en: "…" }`.
 - El orden de los arreglos es el orden en pantalla (experiencia, proyectos…). Las publicaciones se ordenan solas por año, de la más reciente a la más antigua; a igual año se respeta el orden del archivo.
+- Los proyectos están en la constante `projects`, al principio del archivo (la galería la importa directamente para no duplicar sus textos en el HTML). Se editan igual que el resto.
 - **Badge "Disponible para nuevas oportunidades":** `profile.availableForWork: true | false`.
 - **Foto:** guarda un JPG cuadrado de al menos 400 × 400 px en `public/images/profile.jpg`. Aparece sola en el hero y en el JSON-LD. Si no hay foto, se muestra el monograma.
 - **Capturas de proyectos:** exporta cada captura en WebP de unos 1600 × 1000 px (16:10), ya optimizada, porque el sitio no tiene optimizador de imágenes. Luego:
@@ -70,6 +72,18 @@ Todo el CV está en **`src/data/cv.ts`**. No hace falta tocar los componentes.
 - **URL del sitio** (dominio propio en el futuro): `src/lib/site.ts`, o la variable `NEXT_PUBLIC_SITE_URL` al hacer el build.
 
 Busca `TODO` en `src/data/cv.ts` para ver los datos pendientes.
+
+## Movimiento
+
+Todo el movimiento sale de un único juego de tokens, **`src/lib/motion.ts`**: curvas, duraciones (150 ms micro, 300 ms interfaz, 600 ms entradas), distancias, escalonados y springs. Motion los importa tal cual y CSS los recibe como variables `--m-*` (las genera `lib/motion-css.ts` y las inyecta el layout), así que cambiar un valor ahí lo cambia en todo el sitio. En móvil esas variables bajan un peldaño y con "reducir movimiento" las distancias valen cero.
+
+- **Primitivas** (`src/components/motion/`): `<Reveal>` (aparece al entrar en pantalla), `<Stagger>` (sus hijos entran uno tras otro), `<TextReveal>` (por palabras o por líneas, con máscara) y `<Magnetic>` (sigue levemente al cursor). Solo marcan el HTML, así que se usan igual en componentes de servidor.
+- **Reveals de scroll**: el HTML llega con todo visible. `RevealRuntime` oculta únicamente lo que aún está bajo el pliegue y lo revela una sola vez con un único `IntersectionObserver`. Sin JavaScript, o si la hidratación falla, no queda nada oculto.
+- **Motion** se carga con `LazyMotion`: los componentes `m` viajan en el bundle inicial y el motor (`domMax`) llega en un chunk diferido cuando el navegador está libre. Lo que solo sigue al cursor o al scroll (barra de progreso, línea de trayectoria, spotlight del hero, botones magnéticos) también se carga en diferido (`components/motion/deferred.tsx`).
+- **Hero**: su entrada es CSS puro, para no depender de la hidratación ni retrasar el contenido.
+- **Detalle de proyecto**: transición de elemento compartido con View Transitions; sin soporte, un fundido.
+
+Para probar el modo de movimiento reducido: en Chrome o Edge, DevTools → menú ⋮ → *More tools* → *Rendering* → *Emulate CSS media feature prefers-reduced-motion* → `reduce` (o en Windows, *Configuración* → *Accesibilidad* → *Efectos visuales* → desactivar *Efectos de animación*). No debe haber desplazamientos, solo fundidos cortos.
 
 ### PDF del CV
 

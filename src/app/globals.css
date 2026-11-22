@@ -88,6 +88,9 @@
   --ease-smooth: var(--ease);
   --ease-in-out-smooth: var(--m-ease-in-out);
   --ease-spring: var(--m-ease-spring);
+  /* Las utilidades `transition*` sin duración ni curva propias usan las del sistema. */
+  --default-transition-duration: var(--m-dur-micro);
+  --default-transition-timing-function: var(--m-ease-out);
 }
 
 /* Duraciones del sistema como utilidades: `duration-micro`, `duration-ui`, `duration-enter`. */
@@ -149,9 +152,36 @@
   }
 }
 
+/* Scroll suave a las anclas, pero solo cuando lo provoca el visitante: `data-smooth` llega
+   con su primera pulsación o tecla (ver lib/motion-init.ts). Al cargar, recargar o volver
+   atrás el navegador restaura la posición de golpe, sin recorrer la página entera.
+   Sin JavaScript se mantiene el scroll suave de siempre. El hueco de la barra fija lo
+   reserva cada sección con `scroll-mt-16`. */
 @media (prefers-reduced-motion: no-preference) {
-  html {
+  html[data-smooth],
+  html:not([data-js]) {
     scroll-behavior: smooth;
+  }
+
+  /* El anillo de foco se cierra sobre el elemento al llegar con el teclado. Solo repinta
+     el contorno: no mueve ni redimensiona nada. */
+  :focus-visible {
+    animation: focus-ring var(--m-dur-ui) var(--m-ease-out);
+  }
+
+  /* Los elementos del hero ya llevan su animación de entrada: se conserva y se suma el anillo. */
+  .intro:focus-visible {
+    animation:
+      enter-rise var(--m-dur-enter) var(--m-ease-out) both,
+      focus-ring var(--m-dur-ui) var(--m-ease-out);
+    animation-delay: calc(var(--turn, 0) * var(--m-stagger-slow)), 0s;
+  }
+}
+
+@keyframes focus-ring {
+  from {
+    outline-color: transparent;
+    outline-offset: 0.5rem;
   }
 }
 
@@ -1047,7 +1077,7 @@ html[data-vt] .project-dialog .dialog-panel {
       transparent 70%
     );
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity var(--m-dur-ui) var(--m-ease-out);
   }
 
   /* El borde se ilumina cerca del cursor. */
@@ -1068,7 +1098,7 @@ html[data-vt] .project-dialog .dialog-panel {
       linear-gradient(#000 0 0) content-box exclude,
       linear-gradient(#000 0 0);
     opacity: 0;
-    transition: opacity 0.35s ease;
+    transition: opacity var(--m-dur-ui) var(--m-ease-out);
   }
 
   .spotlight:hover::before,
