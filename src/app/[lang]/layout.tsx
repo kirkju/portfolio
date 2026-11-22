@@ -6,6 +6,8 @@ import { cv } from "@/data/cv";
 import { ui } from "@/data/ui";
 import { fontVariables } from "@/lib/fonts";
 import { isLocale, localePath, locales, ogLocales, otherLocale } from "@/lib/i18n";
+import { motionCss } from "@/lib/motion-css";
+import { motionInitScript } from "@/lib/motion-init";
 import { ogImage, ogImagePath } from "@/lib/og";
 import { siteUrl } from "@/lib/site";
 import { themeInitScript } from "@/lib/theme";
@@ -77,7 +79,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     // El HTML se genera en oscuro; el script ajusta el tema antes del primer pintado.
     <html lang={lang} data-theme="dark" className={fontVariables} suppressHydrationWarning>
       <head>
+        {/* Tokens de movimiento como variables CSS (misma fuente que usa Motion). */}
+        <style dangerouslySetInnerHTML={{ __html: motionCss }} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+        <script dangerouslySetInnerHTML={{ __html: motionInitScript }} />
         <HideDevOverlay />
       </head>
       <body className="min-h-svh bg-bg font-sans text-fg antialiased">{children}</body>

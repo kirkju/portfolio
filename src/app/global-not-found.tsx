@@ -5,6 +5,7 @@ import { ArrowRightIcon } from "@/components/icons";
 import { buttonClasses } from "@/components/ui/button-link";
 import { fontVariables } from "@/lib/fonts";
 import { localePath } from "@/lib/i18n";
+import { motionCss } from "@/lib/motion-css";
 import { themeInitScript } from "@/lib/theme";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function GlobalNotFound() {
   return (
     <html lang="es" data-theme="dark" className={fontVariables} suppressHydrationWarning>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: motionCss }} />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <HideDevOverlay />
       </head>

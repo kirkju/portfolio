@@ -54,9 +54,15 @@
   --scrim: rgb(11 27 51 / 0.45);
 }
 
-/* Curva de movimiento común: arranca rápido y frena suave, como un objeto real. */
+/* ---------- Movimiento: tokens ----------
+   Las variables --m-* (curvas, duraciones, distancias y escalonados) salen de
+   src/lib/motion.ts: lib/motion-css.ts las convierte en CSS y el layout las inyecta en
+   <head>. En móvil y con "reducir movimiento" esas mismas variables cambian de valor
+   (distancias más cortas, o cero), así que las reglas de este archivo no necesitan
+   variantes: basta con que usen los tokens. */
 :root {
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Curva por defecto de la interfaz: arranca rápido y frena suave. */
+  --ease: var(--m-ease-out);
 }
 
 @theme inline {
@@ -78,6 +84,24 @@
   --shadow-card-hover: var(--card-shadow-hover);
   --shadow-glow: var(--accent-glow);
   --ease-smooth: var(--ease);
+  --ease-in-out-smooth: var(--m-ease-in-out);
+  --ease-spring: var(--m-ease-spring);
+}
+
+/* Duraciones del sistema como utilidades: `duration-micro`, `duration-ui`, `duration-enter`. */
+@utility duration-micro {
+  --tw-duration: var(--m-dur-micro);
+  transition-duration: var(--m-dur-micro);
+}
+
+@utility duration-ui {
+  --tw-duration: var(--m-dur-ui);
+  transition-duration: var(--m-dur-ui);
+}
+
+@utility duration-enter {
+  --tw-duration: var(--m-dur-enter);
+  transition-duration: var(--m-dur-enter);
 }
 
 @layer base {
@@ -249,14 +273,6 @@
       animation-range: entry 0% entry 12rem;
     }
 
-    /* La línea junto al número de cada sección se dibuja al entrar. */
-    .reveal-line {
-      transform-origin: left;
-      animation: draw-x var(--ease) both;
-      animation-timeline: view();
-      animation-range: cover 5% cover 30%;
-    }
-
     /* La línea de la trayectoria se llena a medida que se lee. */
     .timeline-fill {
       display: block;
@@ -344,6 +360,99 @@
     animation: header-elevate linear both;
     animation-timeline: scroll(root block);
     animation-range: 0 8rem;
+  }
+}
+
+/* ---------- Reveals de scroll ----------
+   Primitivas <Reveal>, <Stagger> y <TextReveal> (components/motion). El HTML del
+   servidor es el estado final: sin JavaScript todo se ve. `RevealRuntime` "arma"
+   (data-armed) solo lo que aún está bajo el pliegue y lo suelta una única vez
+   (data-shown) cuando entra en pantalla; al terminar quita ambos atributos.
+   `--d` es el retraso del bloque e `--i` la posición de cada hijo, palabra o línea. */
+[data-reveal="up"][data-armed]:not([data-shown]),
+[data-reveal="stagger"][data-armed]:not([data-shown]) > * {
+  opacity: 0;
+  transform: translate3d(0, var(--m-shift), 0);
+}
+
+[data-reveal="fade"][data-armed]:not([data-shown]),
+[data-reveal="lines"][data-armed]:not([data-shown]) {
+  opacity: 0;
+}
+
+[data-reveal="line"] {
+  transform-origin: left;
+}
+
+[data-reveal="line"][data-armed]:not([data-shown]) {
+  transform: scaleX(0);
+}
+
+/* Palabras y líneas suben desde su máscara. */
+[data-reveal="words"][data-armed]:not([data-shown]) .word,
+[data-reveal="lines"][data-armed]:not([data-shown]) .line {
+  transform: translate3d(0, 110%, 0);
+}
+
+[data-reveal][data-armed][data-shown],
+[data-reveal="stagger"][data-armed][data-shown] > *,
+[data-reveal][data-armed][data-shown] :is(.word, .line) {
+  transition:
+    opacity var(--m-dur-enter) var(--m-ease-out),
+    transform var(--m-dur-enter) var(--m-ease-out);
+}
+
+[data-reveal][data-armed][data-shown] {
+  transition-delay: var(--d, 0ms);
+}
+
+[data-reveal="stagger"][data-armed][data-shown] > * {
+  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * var(--step, var(--m-stagger)));
+}
+
+[data-reveal][data-armed][data-shown] :is(.word, .line) {
+  transition-delay: calc(var(--d, 0ms) + var(--i, 0) * var(--m-stagger));
+}
+
+/* El párrafo aparece de golpe: lo que se mueve son sus líneas. */
+[data-reveal="lines"][data-armed][data-shown] {
+  transition: none;
+}
+
+[data-stagger="fast"] {
+  --step: var(--m-stagger-fast);
+}
+
+[data-stagger="base"] {
+  --step: var(--m-stagger);
+}
+
+[data-stagger="slow"] {
+  --step: var(--m-stagger-slow);
+}
+
+/* Líneas de un párrafo (las crea RevealRuntime mientras dura su entrada). */
+.line-mask {
+  display: block;
+  overflow: clip;
+}
+
+.line {
+  display: block;
+  white-space: nowrap;
+}
+
+/* Con movimiento reducido las distancias ya valen 0 (tokens); lo que sube desde una
+   máscara o se dibuja pasa a ser un fundido corto. */
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal="words"][data-armed]:not([data-shown]),
+  [data-reveal="line"][data-armed]:not([data-shown]) {
+    opacity: 0;
+    transform: none;
+  }
+
+  [data-reveal="words"][data-armed]:not([data-shown]) .word {
+    transform: none;
   }
 }
 
@@ -654,17 +763,6 @@ html[data-vt] .project-dialog .dialog-panel {
   }
 
   @supports (animation-timeline: view()) {
-    /* Títulos de sección: al entrar con el scroll, escalonados por palabra. */
-    .split-heading {
-      view-timeline: --heading block;
-    }
-
-    .split-heading .word {
-      animation: word-up var(--ease) both;
-      animation-timeline: --heading;
-      animation-range: cover calc(var(--i, 0) * 3%) cover calc(22% + var(--i, 0) * 3%);
-    }
-
     /* Habilidades: los chips aparecen en cascada mientras entra su tarjeta. */
     .skill-card {
       view-timeline: --skill block;
@@ -856,9 +954,16 @@ html[data-vt] .project-dialog .dialog-panel {
 
   .reveal,
   .rise,
-  .reveal-line,
   .site-header {
     animation: none !important;
+  }
+
+  /* Nada queda oculto a la espera de entrar con el scroll. */
+  [data-armed],
+  [data-armed] > *,
+  [data-armed] :is(.word, .line) {
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .scroll-progress,
