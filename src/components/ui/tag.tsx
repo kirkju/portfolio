@@ -15,10 +15,22 @@ export function Tag({ children, className }: { children: ReactNode; className?: 
   );
 }
 
+type TagListProps = {
+  items: readonly string[];
+  label?: string;
+  className?: string;
+  /** Las etiquetas entran una tras otra, en cascada rápida, cuando la lista se revela. */
+  stagger?: boolean;
+};
+
 /** Lista de etiquetas con semántica de lista. */
-export function TagList({ items, label, className }: { items: readonly string[]; label?: string; className?: string }) {
+export function TagList({ items, label, className, stagger = false }: TagListProps) {
   return (
-    <ul aria-label={label} className={cn("flex flex-wrap gap-2", className)}>
+    <ul
+      aria-label={label}
+      className={cn("flex flex-wrap gap-2", className)}
+      {...(stagger ? { "data-reveal": "stagger", "data-stagger": "fast" } : null)}
+    >
       {items.map((item) => (
         <li key={item}>
           <Tag>{item}</Tag>

@@ -73,6 +73,9 @@ export const header = {
   spyLine: 0.4,
 } as const;
 
+/** Línea de la trayectoria: altura de la ventana (0 arriba, 1 abajo) hasta la que llega el relleno. */
+export const timeline = { readingLine: 0.7 } as const;
+
 /** Botones magnéticos: cuánto siguen al cursor y hasta dónde, en px. */
 export const magnetic = { strength: 0.3, max: distance.sm / 2 } as const;
 

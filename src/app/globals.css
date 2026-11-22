@@ -175,11 +175,6 @@
 }
 
 /* ---------- Animaciones (solo si el usuario no pidió reducir el movimiento) ---------- */
-/* Oculta salvo donde el navegador anima con el scroll (más abajo). */
-.timeline-fill {
-  display: none;
-}
-
 /* Solo desplazamiento, sin opacidad: el texto que entra por el borde de la pantalla
    nunca queda semitransparente (mantiene el contraste AA en todo momento). */
 @keyframes reveal {
@@ -188,15 +183,6 @@
   }
   to {
     translate: 0 0;
-  }
-}
-
-@keyframes draw-y {
-  from {
-    scale: 1 0;
-  }
-  to {
-    scale: 1 1;
   }
 }
 
@@ -231,15 +217,6 @@
       animation: reveal var(--ease) both;
       animation-timeline: view();
       animation-range: entry 0% entry 12rem;
-    }
-
-    /* La línea de la trayectoria se llena a medida que se lee. */
-    .timeline-fill {
-      display: block;
-      transform-origin: top;
-      animation: draw-y linear both;
-      animation-timeline: view();
-      animation-range: cover 10% cover 50%;
     }
   }
 
@@ -539,6 +516,63 @@ html[data-scrolled] .mobile-panel {
 
 .lang-active {
   view-transition-name: lang-active;
+}
+
+/* ---------- Trayectoria ----------
+   La línea de relleno (components/motion/timeline-fill.tsx) se dibuja con el scroll sobre
+   la línea gris de la lista, que en escritorio empieza tras la columna de fechas
+   (10rem + 2.5rem de separación). Los nodos salen encendidos del servidor; el relleno
+   apaga los que aún no se han visto (data-armed) y los enciende al llegar (data-lit). */
+.timeline-track {
+  left: 0;
+
+  @media (width >= 48rem) {
+    left: 12.5rem;
+  }
+}
+
+.timeline-node[data-armed]:not([data-lit]) .timeline-node-core {
+  opacity: 0;
+  transform: scale(0.4);
+}
+
+.timeline-node[data-armed][data-lit] .timeline-node-core {
+  transition:
+    opacity var(--m-dur-ui) var(--m-ease-out),
+    transform var(--m-dur-spring) var(--m-ease-spring);
+}
+
+/* Al encenderse, el nodo suelta un anillo que se expande y se apaga, una sola vez. */
+.timeline-node::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border: 2px solid var(--accent);
+  border-radius: 9999px;
+  opacity: 0;
+}
+
+@keyframes node-pulse {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-node[data-armed][data-lit]::after {
+    animation: node-pulse var(--m-dur-enter) var(--m-ease-out);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline-node[data-armed]:not([data-lit]) .timeline-node-core {
+    transform: none;
+  }
 }
 
 /* ---------- Hero ----------
@@ -1121,7 +1155,12 @@ html[data-vt] .project-dialog .dialog-panel {
   }
 
   .header-progress,
-  .timeline-fill {
+  .timeline-track {
     display: none !important;
+  }
+
+  .timeline-node .timeline-node-core {
+    opacity: 1 !important;
+    transform: none !important;
   }
 }
