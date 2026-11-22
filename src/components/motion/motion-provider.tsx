@@ -39,7 +39,8 @@ export function MotionProvider({ children }: { children: ReactNode }) {
   const loadFeatures = useCallback(async () => {
     await whenIdle();
     const { default: features } = await import("./features");
-    startTransition(() => setReady(true));
+    // Un instante después: para entonces LazyMotion ya entregó el motor a los componentes `m`.
+    window.setTimeout(() => startTransition(() => setReady(true)), 0);
     return features;
   }, []);
 

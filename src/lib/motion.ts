@@ -79,5 +79,11 @@ export const timeline = { readingLine: 0.7 } as const;
 /** Botones magnéticos: cuánto siguen al cursor y hasta dónde, en px. */
 export const magnetic = { strength: 0.3, max: distance.sm / 2 } as const;
 
-/** Gestos del detalle de proyecto: desplazamiento (px) o velocidad (px/s) que cambia de proyecto. */
-export const swipe = { offset: 64, velocity: 480 } as const;
+/** Gesto de deslizar en el detalle de proyecto (táctil). */
+export const swipe = {
+  /** Desplazamiento (px) o velocidad (px/s) a partir de los que se cambia de proyecto. */
+  offset: 64,
+  velocity: 480,
+  /** Cuánto sigue el contenido al dedo: 1 iría pegado, menos ofrece resistencia. */
+  resistance: 0.6,
+} as const;

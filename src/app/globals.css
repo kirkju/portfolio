@@ -243,42 +243,56 @@
     }
   }
 
-  /* Iconos que acompañan el gesto del enlace o botón que los contiene. */
+  /* Iconos que acompañan el gesto del enlace o botón que los contiene (`.nudge-host`
+     extiende el gesto a una tarjeta entera). Al pulsar, el icono avanza un poco más. */
   .nudge-x,
+  .nudge-back,
   .nudge-y,
   .nudge-up,
   .nudge-xy {
+    --nudge: 0.1875rem;
     transition:
-      translate 0.25s var(--ease),
-      color 0.2s ease;
+      translate var(--m-dur-ui) var(--m-ease-out),
+      color var(--m-dur-micro) var(--m-ease-out);
   }
 
   :is(a, button):focus-visible .nudge-x {
-    translate: 0.1875rem 0;
+    translate: var(--nudge) 0;
+  }
+  :is(a, button):focus-visible .nudge-back {
+    translate: calc(var(--nudge) * -1) 0;
   }
   :is(a, button):focus-visible .nudge-y {
-    translate: 0 0.125rem;
+    translate: 0 calc(var(--nudge) * 2 / 3);
   }
   :is(a, button):focus-visible .nudge-up {
-    translate: 0 -0.1875rem;
+    translate: 0 calc(var(--nudge) * -1);
   }
   :is(a, button):focus-visible .nudge-xy {
-    translate: 0.125rem -0.125rem;
+    translate: calc(var(--nudge) * 2 / 3) calc(var(--nudge) * -2 / 3);
   }
 
   @media (hover: hover) {
-    :is(a, button):hover .nudge-x {
-      translate: 0.1875rem 0;
+    :is(a, button, .nudge-host):hover .nudge-x {
+      translate: var(--nudge) 0;
     }
-    :is(a, button):hover .nudge-y {
-      translate: 0 0.125rem;
+    :is(a, button, .nudge-host):hover .nudge-back {
+      translate: calc(var(--nudge) * -1) 0;
     }
-    :is(a, button):hover .nudge-up {
-      translate: 0 -0.1875rem;
+    :is(a, button, .nudge-host):hover .nudge-y {
+      translate: 0 calc(var(--nudge) * 2 / 3);
     }
-    :is(a, button):hover .nudge-xy {
-      translate: 0.125rem -0.125rem;
+    :is(a, button, .nudge-host):hover .nudge-up {
+      translate: 0 calc(var(--nudge) * -1);
     }
+    :is(a, button, .nudge-host):hover .nudge-xy {
+      translate: calc(var(--nudge) * 2 / 3) calc(var(--nudge) * -2 / 3);
+    }
+  }
+
+  :is(a, button):active :is(.nudge-x, .nudge-back, .nudge-y, .nudge-up, .nudge-xy) {
+    --nudge: 0.375rem;
+    transition-duration: var(--m-dur-micro);
   }
 }
 
@@ -581,7 +595,7 @@ html[data-scrolled] .mobile-panel {
    el retraso es turno × escalonado. Los fotogramas finales son implícitos (el estilo
    normal del elemento), así que al terminar no queda nada distinto de como estaba.
    Al llegar desde el cambio de idioma (`data-intro="skip"`) la entrada no se repite. */
-@keyframes intro-rise {
+@keyframes enter-rise {
   from {
     opacity: 0;
     transform: translate3d(0, var(--m-shift), 0);
@@ -623,7 +637,7 @@ html[data-scrolled] .mobile-panel {
 }
 
 .intro {
-  animation: intro-rise var(--m-dur-enter) var(--m-ease-out) both;
+  animation: enter-rise var(--m-dur-enter) var(--m-ease-out) both;
   animation-delay: calc(var(--turn, 0) * var(--m-stagger-slow));
 }
 
@@ -704,20 +718,10 @@ html[data-intro="skip"] :is(.intro, .intro-photo, .intro-photo img, .hero-name, 
 }
 
 /* ---------- Galería de proyectos ----------
-   Filtros que reacomodan las tarjetas, detalle en <dialog> con la imagen que
-   "vuela" desde la tarjeta, y anterior/siguiente con deslizamiento. El estado de
-   cada transición lo pone project-gallery.tsx en <html data-vt="…">. */
-
-/* Durante un filtro, cada tarjeta visible y la pastilla tienen nombre propio. */
-html[data-vt="filter"] .project-list > li:not([hidden]) {
-  view-transition-name: var(--vt-name);
-  view-transition-class: project-card;
-}
-
-html[data-vt="filter"] .filter-pill {
-  view-transition-name: filter-pill;
-}
-
+   Los filtros y el reordenado de tarjetas los anima Motion (project-gallery.tsx). El
+   detalle se abre con una View Transition de elemento compartido: la tarjeta crece hasta
+   ser el panel mientras su imagen y su título viajan a su nuevo sitio; al cerrar, vuelven.
+   El estado de la transición está en <html data-vt="open | close">. */
 .project-dialog[open] .dialog-panel {
   view-transition-name: project-dialog;
 }
@@ -726,42 +730,70 @@ html[data-vt="filter"] .filter-pill {
   view-transition-name: project-media;
 }
 
-html:is([data-vt="next"], [data-vt="prev"]) .project-dialog[open] .dialog-body {
-  view-transition-name: project-dialog-body;
+.project-dialog[open] .dialog-title {
+  view-transition-name: project-title;
 }
 
 /* Con el detalle encima, la barra y el idioma no se capturan aparte: así el velo
    oscuro los cubre durante toda la animación. */
-html:is([data-vt="open"], [data-vt="close"], [data-vt="next"], [data-vt="prev"]) :is(.site-header, .lang-active) {
+html[data-vt] :is(.site-header, .lang-active) {
   view-transition-name: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  ::view-transition-group(.project-card) {
-    animation-duration: 0.5s;
-    animation-timing-function: var(--ease);
+  /* El velo oscuro aparece y desaparece con un fundido cruzado de la página. */
+  html[data-vt]::view-transition-old(root) {
+    animation: vt-fade-out var(--m-dur-ui) var(--m-ease-in-out) both;
   }
 
-  ::view-transition-new(.project-card):only-child {
-    animation: card-in 0.4s var(--ease) both;
+  html[data-vt]::view-transition-new(root) {
+    animation: vt-fade-in var(--m-dur-ui) var(--m-ease-in-out) both;
   }
 
-  ::view-transition-old(.project-card):only-child {
-    animation: card-out 0.22s ease-in both;
+  /* Las tres piezas compartidas se mueven con el spring del sistema. */
+  ::view-transition-group(project-dialog),
+  ::view-transition-group(project-media),
+  ::view-transition-group(project-title) {
+    animation-duration: var(--m-dur-spring);
+    animation-timing-function: var(--m-ease-spring);
   }
 
-  ::view-transition-group(filter-pill) {
-    animation-duration: 0.45s;
-    animation-timing-function: var(--ease);
+  /* Tarjeta y panel: una superficie que cambia de tamaño. Su contenido no se estira:
+     el de salida se funde rápido y el de entrada aparece, ambos anclados arriba. */
+  ::view-transition-group(project-dialog) {
+    overflow: clip;
+    border-radius: 1.5rem;
+    background: var(--surface);
+    box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
   }
 
+  ::view-transition-old(project-dialog),
+  ::view-transition-new(project-dialog) {
+    mix-blend-mode: normal;
+  }
+
+  ::view-transition-old(project-dialog) {
+    animation: vt-fade-out var(--m-dur-micro) var(--m-ease-in-out) both;
+  }
+
+  ::view-transition-new(project-dialog) {
+    animation: vt-fade-in var(--m-dur-ui) var(--m-ease-out) var(--m-stagger) both;
+  }
+
+  /* Sin tarjeta a la vista (se cerró lejos de ella), el panel entra o sale solo. */
+  ::view-transition-new(project-dialog):only-child {
+    animation: dialog-in var(--m-dur-spring) var(--m-ease-spring) both;
+  }
+
+  ::view-transition-old(project-dialog):only-child {
+    animation: dialog-out var(--m-dur-ui) var(--m-ease-in-out) both;
+  }
+
+  /* La imagen cambia de proporción (16:10 a 2:1) recortándose, sin deformarse. */
   ::view-transition-group(project-media) {
     z-index: 2;
-    animation-duration: 0.55s;
-    animation-timing-function: var(--ease);
   }
 
-  /* La imagen cambia de proporción (16:10 → 2:1) sin deformarse. */
   ::view-transition-old(project-media),
   ::view-transition-new(project-media) {
     height: 100%;
@@ -769,91 +801,82 @@ html:is([data-vt="open"], [data-vt="close"], [data-vt="next"], [data-vt="prev"])
     overflow: clip;
   }
 
-  ::view-transition-group(project-dialog) {
-    animation-duration: 0.45s;
-    animation-timing-function: var(--ease);
+  /* Durante el vuelo se ve la captura de la tarjeta (la imagen entera, que se recorta bien
+     a cualquier proporción); la del detalle, ya recortada, solo coincide en su extremo.
+     Por eso el fundido entre ambas va pegado al lado del detalle: al final al abrir y al
+     principio al cerrar. Así no se ve la imagen doble a medio camino. */
+  html[data-vt="open"]::view-transition-old(project-media) {
+    animation: vt-fade-out-late var(--m-dur-spring) linear both;
   }
 
-  ::view-transition-new(project-dialog):only-child {
-    animation: dialog-in 0.45s var(--ease) both;
+  html[data-vt="open"]::view-transition-new(project-media) {
+    animation: vt-fade-in-late var(--m-dur-spring) linear both;
   }
 
-  ::view-transition-old(project-dialog):only-child {
-    animation: dialog-out 0.25s ease-in both;
+  html[data-vt="close"]::view-transition-old(project-media) {
+    animation: vt-fade-out var(--m-dur-micro) linear both;
   }
 
-  html[data-vt="next"]::view-transition-old(project-dialog-body) {
-    animation: slide-out-left 0.25s ease-in both;
+  html[data-vt="close"]::view-transition-new(project-media) {
+    animation: vt-fade-in var(--m-dur-micro) linear both;
   }
 
-  html[data-vt="next"]::view-transition-new(project-dialog-body) {
-    animation: slide-in-right 0.45s var(--ease) both;
+  /* El título cambia de tamaño de letra: cada versión conserva el suyo y se funden en ruta. */
+  ::view-transition-group(project-title) {
+    z-index: 3;
   }
 
-  html[data-vt="prev"]::view-transition-old(project-dialog-body) {
-    animation: slide-out-right 0.25s ease-in both;
+  ::view-transition-old(project-title),
+  ::view-transition-new(project-title) {
+    width: auto;
+    height: auto;
+    mix-blend-mode: normal;
   }
 
-  html[data-vt="prev"]::view-transition-new(project-dialog-body) {
-    animation: slide-in-left 0.45s var(--ease) both;
+  ::view-transition-old(project-title) {
+    animation: vt-fade-out var(--m-dur-micro) var(--m-ease-in-out) both;
+  }
+
+  ::view-transition-new(project-title) {
+    animation: vt-fade-in var(--m-dur-ui) var(--m-ease-out) var(--m-stagger) both;
+  }
+
+  /* Al abrir, el contenido del detalle entra en cascada (cada bloque lleva su turno en --i).
+     Al pasar de un proyecto a otro no se repite: ahí el contenido entra deslizando. */
+  .project-dialog[data-phase="opening"] [data-enter] {
+    animation: enter-rise var(--m-dur-enter) var(--m-ease-out) backwards;
+    animation-delay: calc(var(--m-dur-ui) / 2 + var(--i, 0) * var(--m-stagger));
   }
 }
 
-@keyframes card-in {
-  from {
+/* Fundidos que ocupan solo el tramo final de la animación. */
+@keyframes vt-fade-in-late {
+  from,
+  55% {
     opacity: 0;
-    scale: 0.9;
   }
 }
 
-@keyframes card-out {
+@keyframes vt-fade-out-late {
+  55% {
+    opacity: 1;
+  }
   to {
     opacity: 0;
-    scale: 0.9;
   }
 }
 
 @keyframes dialog-in {
   from {
     opacity: 0;
-    translate: 0 1.5rem;
-    scale: 0.96;
+    transform: translate3d(0, var(--m-shift-lg), 0) scale(0.96);
   }
 }
 
 @keyframes dialog-out {
   to {
     opacity: 0;
-    translate: 0 1rem;
-    scale: 0.97;
-  }
-}
-
-@keyframes slide-out-left {
-  to {
-    opacity: 0;
-    translate: -2.5rem 0;
-  }
-}
-
-@keyframes slide-in-right {
-  from {
-    opacity: 0;
-    translate: 2.5rem 0;
-  }
-}
-
-@keyframes slide-out-right {
-  to {
-    opacity: 0;
-    translate: 2.5rem 0;
-  }
-}
-
-@keyframes slide-in-left {
-  from {
-    opacity: 0;
-    translate: -2.5rem 0;
+    transform: translate3d(0, var(--m-shift), 0) scale(0.97);
   }
 }
 
@@ -870,16 +893,16 @@ html:has(.project-dialog[open]) {
 
 .project-dialog {
   transition:
-    display 0.3s allow-discrete,
-    overlay 0.3s allow-discrete;
+    display var(--m-dur-ui) allow-discrete,
+    overlay var(--m-dur-ui) allow-discrete;
 }
 
 .project-dialog::backdrop {
   background-color: transparent;
   transition:
-    background-color 0.3s ease,
-    display 0.3s allow-discrete,
-    overlay 0.3s allow-discrete;
+    background-color var(--m-dur-ui) var(--m-ease-out),
+    display var(--m-dur-ui) allow-discrete,
+    overlay var(--m-dur-ui) allow-discrete;
 }
 
 .project-dialog[open]::backdrop {
@@ -888,14 +911,15 @@ html:has(.project-dialog[open]) {
 
 .project-dialog .dialog-panel {
   opacity: 0;
+  transform: translate3d(0, var(--m-shift-lg), 0) scale(0.97);
   transition:
-    opacity 0.25s ease,
-    translate 0.4s var(--ease),
-    scale 0.4s var(--ease);
+    opacity var(--m-dur-ui) var(--m-ease-out),
+    transform var(--m-dur-ui) var(--m-ease-out);
 }
 
 .project-dialog[open] .dialog-panel {
   opacity: 1;
+  transform: none;
 }
 
 @starting-style {
@@ -905,25 +929,14 @@ html:has(.project-dialog[open]) {
 
   .project-dialog[open] .dialog-panel {
     opacity: 0;
+    transform: translate3d(0, var(--m-shift-lg), 0) scale(0.97);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .project-dialog .dialog-panel {
-    translate: 0 1.5rem;
-    scale: 0.97;
-  }
-
+@media (prefers-reduced-motion: reduce) {
+  .project-dialog .dialog-panel,
   .project-dialog[open] .dialog-panel {
-    translate: 0 0;
-    scale: 1;
-  }
-
-  @starting-style {
-    .project-dialog[open] .dialog-panel {
-      translate: 0 1.5rem;
-      scale: 0.97;
-    }
+    transform: none;
   }
 }
 
@@ -931,6 +944,14 @@ html[data-vt] .project-dialog,
 html[data-vt] .project-dialog::backdrop,
 html[data-vt] .project-dialog .dialog-panel {
   transition: none;
+}
+
+/* Número que rueda (components/motion/animated-number.tsx): la caja recorta lo que sale. */
+.number-roll {
+  position: relative;
+  display: inline-block;
+  overflow: clip;
+  vertical-align: bottom;
 }
 
 /* ---------- Títulos que suben palabra por palabra ---------- */

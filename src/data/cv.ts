@@ -7,7 +7,341 @@
  * - Tras cambiar algo aquí, regenera los PDF con `npm run cv:pdf`.
  * - Busca "TODO" para ver los datos pendientes.
  */
-import type { CV } from "./types";
+import type { CV, Project } from "./types";
+
+/**
+ * Proyectos destacados. Viven en su propia constante (y no escritos dentro de `cv`) para
+ * que la galería, que es interactiva, los importe sin llevarse el resto del CV al navegador
+ * ni duplicarlos en el HTML. Se editan igual que siempre.
+ *
+ * Las imágenes de /public/projects son provisionales. Al reemplazarlas por capturas
+ * reales, actualiza `image` y describe la captura en `imageAlt` (un alt vacío indica que
+ * la imagen es decorativa).
+ */
+export const projects: readonly Project[] = [
+  {
+    // Proyecto confidencial: no nombrar al cliente, el producto ni sus sistemas internos.
+    id: "crm-rust",
+    title: { es: "Plataforma CRM Unificada en Rust", en: "Unified CRM Platform in Rust" },
+    client: { es: "Cliente confidencial", en: "Confidential client" },
+    year: 2025,
+    ongoing: true,
+    status: "production",
+    image: "/projects/crm-rust.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "Los datos de clientes, oportunidades, contratos y cotizaciones estaban repartidos en cuatro sistemas internos heredados.",
+      en: "Customer, opportunity, contract, and quoting data was spread across four legacy internal systems.",
+    },
+    solution: {
+      es: "Plataforma web en Rust (Actix-web) sobre PostgreSQL que unifica los datos de cuatro sistemas heredados en una sola experiencia de CRM, ventas y cotizaciones —empresas, contactos, oportunidades, propuestas y actividades—, con interfaz HTML-first (HTMX + Handlebars) y seguridad a nivel de fila.",
+      en: "A Rust (Actix-web) web platform on PostgreSQL that unifies data from four legacy systems into a single CRM, sales, and quoting experience — companies, contacts, opportunities, proposals, and activities — with an HTML-first UI (HTMX + Handlebars) and row-level security.",
+    },
+    result: {
+      es: "En producción y en desarrollo continuo: CRM, ventas y cotizaciones en una sola plataforma, con dashboards de pronóstico y de actividad y un registro de auditoría automático.",
+      en: "In production and under active development: CRM, sales, and quoting in one platform, with forecast and activity dashboards and an automatic audit trail.",
+    },
+    features: {
+      es: [
+        "Empresas, contactos, oportunidades y propuestas",
+        "Registro y seguimiento de actividades",
+        "Dashboards de pronóstico y KPIs",
+        "Acceso por roles con Row-Level Security",
+        "Auditoría automática con triggers de PostgreSQL",
+        "Exportación de reportes (XLSX, CSV, PDF)",
+      ],
+      en: [
+        "Companies, contacts, opportunities, and proposals",
+        "Activity logging and follow-ups",
+        "Forecast and KPI dashboards",
+        "Role-based access with row-level security",
+        "Automatic audit trail via PostgreSQL triggers",
+        "Report export (XLSX, CSV, PDF)",
+      ],
+    },
+    stack: ["Rust", "Actix-web", "PostgreSQL", "SQLx", "HTMX", "Handlebars", "Docker", "OpenTelemetry"],
+    url: "https://unified.circlemsp.com",
+  },
+  {
+    // Datos tomados de los repositorios y del informe del proyecto (13-oct-2026).
+    // NENO lo desarrolla otro equipo: aquí se describe su integración con la tienda.
+    id: "la-universal",
+    title: { es: "Tienda en Línea La Universal", en: "La Universal Online Store" },
+    client: { es: "ACOSA", en: "ACOSA" },
+    year: 2026,
+    status: "production",
+    image: "/projects/la-universal.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "La Universal necesitaba una tienda en línea propia para su catálogo de tecnología y hogar, alimentada con los artículos, precios y existencias de su ERP, y un panel para administrarla.",
+      en: "La Universal needed its own online store for its technology and home catalog, fed with the items, prices, and stock from its ERP, plus an admin panel to run it.",
+    },
+    solution: {
+      es: "Tienda y panel de administración en Next.js sobre una API propia en Node.js (Fastify) y PostgreSQL, con buscador tolerante a errores, montos calculados en el servidor y sincronización con el ERP que se simula y se puede revertir. Integra a NENO, el asistente virtual de la tienda, que guía al cliente y solo ejecuta acciones de una lista cerrada, sin tocar precios ni confirmar pedidos.",
+      en: "A storefront and admin panel in Next.js on a custom Node.js (Fastify) and PostgreSQL API, with typo-tolerant search, server-computed amounts, and an ERP sync that can be dry-run and rolled back. It integrates NENO, the store's virtual assistant, which guides customers and only runs actions from a closed list, never touching prices or confirming orders.",
+    },
+    result: {
+      es: "En producción y abierta al público desde octubre de 2026, hoy en launiversal.com.ni, con el catálogo sincronizado con el ERP y más de 2600 pruebas automáticas en el backend.",
+      en: "In production and open to the public since October 2026, now at launiversal.com.ni, with the catalog synced from the ERP and more than 2,600 automated backend tests.",
+    },
+    features: {
+      es: [
+        "Buscador con sugerencias y tolerancia a errores",
+        "Sincronización con el ERP: simulación, frenos y reversión",
+        "Asistente NENO con acciones de lista cerrada",
+        "Transferencia con comprobante o pago al retirar",
+        "Cupones, campañas y correos automáticos",
+        "Panel con permisos por rol y auditoría",
+      ],
+      en: [
+        "Search with suggestions and typo tolerance",
+        "ERP sync with dry runs, safety brakes, and rollback",
+        "NENO assistant with a closed list of actions",
+        "Bank transfer with receipt or pay at pickup",
+        "Coupons, campaigns, and automated emails",
+        "Role-based admin panel with audit trail",
+      ],
+    },
+    stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "Fastify", "PostgreSQL", "Vitest", "Playwright", "Docker", "AWS"],
+    url: "https://www.launiversal.com.ni",
+  },
+  {
+    // Proyecto confidencial: no nombrar el producto, la empresa, sus proveedores ni su infraestructura.
+    id: "campanas-multicanal",
+    title: {
+      es: "Sistema de Campañas Multicanal con IA",
+      en: "AI-Assisted Multichannel Campaign System",
+    },
+    client: { es: "Proyecto confidencial", en: "Confidential project" },
+    year: 2026,
+    status: "development",
+    image: "/projects/campanas-multicanal.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "Preparar una campaña multicanal tomaba días de trabajo manual —buscar empresas, encontrar contactos, verificar correos, quitar duplicados y adaptar formatos y mensajes—, y cada canal terminaba trabajando con una lista distinta.",
+      en: "Putting together a multichannel campaign took days of manual work — finding companies and contacts, verifying emails, removing duplicates, and adapting formats and messages — and each channel ended up working from a different list.",
+    },
+    solution: {
+      es: "Aplicación web que convierte un perfil de cliente ideal en campañas para cuatro canales —correo en frío, mensajes directos y anuncios en la red profesional, y anuncios en redes sociales— sobre una única audiencia: enriquece, verifica y segmenta los contactos, y usa un LLM (API de Claude) para redactar mensajes a medida, clasificar respuestas y proponer borradores. API en FastAPI sobre PostgreSQL con frontend en React; todo envío o lanzamiento lo confirma una persona.",
+      en: "A web app that turns an ideal customer profile into campaigns for four channels — cold email, direct messages and ads on the professional network, and social media ads — built on a single audience: it enriches, verifies, and segments contacts, and uses an LLM (Claude API) to write tailored messages, classify replies, and draft responses. A FastAPI API on PostgreSQL with a React frontend; every send or launch is confirmed by a person.",
+    },
+    result: {
+      es: "En desarrollo: los módulos de datos, audiencias, correo, respuestas y panel de métricas están construidos y probados en un entorno de demostración con Docker y datos sintéticos.",
+      en: "In development: the data, audience, email, reply, and metrics-dashboard modules are built and tested in a Docker demo environment with synthetic data.",
+    },
+    features: {
+      es: [
+        "Perfil de cliente ideal y buyer personas versionados",
+        "Enriquecimiento, verificación y deduplicación de contactos",
+        "Una sola audiencia para cuatro canales",
+        "Mensajes y borradores de respuesta con LLM",
+        "Confirmación humana antes de enviar o lanzar",
+        "Tope de gasto y registro de costos",
+      ],
+      en: [
+        "Versioned ideal customer profile and buyer personas",
+        "Contact enrichment, verification, and deduplication",
+        "A single audience across four channels",
+        "LLM-written messages and reply drafts",
+        "Human confirmation before sending or launching",
+        "Spending cap and cost logging",
+      ],
+    },
+    stack: ["Python", "FastAPI", "PostgreSQL", "React", "TypeScript", "Claude API", "Docker", "Playwright"],
+  },
+  {
+    // Une el sitio de ventas y la webapp de fletes (antes eran dos tarjetas); el ERP va aparte.
+    id: "ferrexpress-ventas-fletes",
+    title: { es: "Plataforma Web de Ventas y Fletes Ferrexpress", en: "Ferrexpress Sales & Freight Web Platform" },
+    client: { es: "Ferrexpress", en: "Ferrexpress" },
+    year: 2024,
+    status: "delivered",
+    image: "/projects/ferrexpress-ventas-fletes.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "Ferrexpress necesitaba un canal de ventas en línea que integrara la gestión de productos y la atención al cliente, y coordinar su operación logística: rutas, conductores, vehículos y el seguimiento de cada entrega.",
+      en: "Ferrexpress needed an online sales channel that brought together product management and customer service, and a way to coordinate its logistics: routes, drivers, vehicles, and tracking for every delivery.",
+    },
+    solution: {
+      es: "Sitio de ventas con catálogo interactivo, pago en línea con Stripe y seguimiento de pedidos, y gestión de fletes con rutas, conductores, vehículos y entregas en tiempo real (SignalR y Google Maps), en Blazor y ASP.NET Core sobre SQL Server en Azure.",
+      en: "A sales site with an interactive catalog, Stripe online payments, and order tracking, plus freight management with routes, drivers, vehicles, and real-time deliveries (SignalR and Google Maps), built with Blazor and ASP.NET Core on SQL Server in Azure.",
+    },
+    result: {
+      es: "Entregada: ventas, catálogo, pedidos y fletes centralizados, con informes de rendimiento y costos.",
+      en: "Delivered: sales, catalog, orders, and freight in one place, with performance and cost reports.",
+    },
+    features: {
+      es: [
+        "Catálogo interactivo",
+        "Pago en línea con Stripe",
+        "Seguimiento de pedidos",
+        "Creación y control de fletes",
+        "Rutas, conductores y vehículos",
+        "Seguimiento de entregas en tiempo real",
+      ],
+      en: [
+        "Interactive catalog",
+        "Stripe online payments",
+        "Order tracking",
+        "Freight creation and control",
+        "Routes, drivers, and vehicles",
+        "Real-time delivery tracking",
+      ],
+    },
+    stack: ["Blazor", "ASP.NET Core", "SQL Server", "Azure", "Stripe API", "SignalR", "Google Maps API"],
+  },
+  {
+    id: "asegure-nominas",
+    title: { es: "Automatización de Nóminas ASEGURE", en: "ASEGURE Payroll Automation" },
+    client: { es: "ASEGURE", en: "ASEGURE" },
+    year: 2023,
+    status: "production",
+    image: "/projects/asegure-nominas.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "La generación de nóminas de ASEGURE involucraba cálculos complejos y debía integrarse con los sistemas contables existentes.",
+      en: "ASEGURE's payroll generation involved complex calculations and had to integrate with the existing accounting systems.",
+    },
+    solution: {
+      es: "Herramientas en C# con procesamiento por lotes, cálculos automáticos y consultas SQL optimizadas, integradas con el ERP y con reportes en Power BI.",
+      en: "C# tools with batch processing, automated calculations, and optimized SQL queries, integrated with the ERP and with Power BI reporting.",
+    },
+    result: {
+      es: "En producción: automatizan la generación de nóminas y alimentan los reportes de BI.",
+      en: "In production: they automate payroll generation and feed the BI reports.",
+    },
+    features: {
+      es: ["Procesamiento batch", "Cálculos automáticos", "Integración con ERP", "Reportes BI"],
+      en: ["Batch processing", "Automated calculations", "ERP integration", "BI reports"],
+    },
+    stack: ["C#", "SQL Server", "Entity Framework", "Azure SQL", "Power BI"],
+  },
+  {
+    id: "ferrexpress-erp",
+    title: { es: "ERP de Proyectos de Construcción Ferrexpress", en: "Ferrexpress Construction Projects ERP" },
+    client: { es: "Ferrexpress", en: "Ferrexpress" },
+    year: 2026,
+    status: "delivered",
+    image: "/projects/ferrexpress-erp.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "Ferrexpress necesitaba controlar todas sus obras de construcción en un solo lugar: presupuestos, gastos, compras, avance y documentación.",
+      en: "Ferrexpress needed to manage all of its construction projects in one place: budgets, expenses, purchasing, progress, and documentation.",
+    },
+    solution: {
+      es: "ERP web en Blazor (.NET 10) con PostgreSQL: obras con flujo de estados y avance por etapas, presupuestos versionados, finanzas con aprobaciones y alertas de presupuesto, órdenes de compra con recepción parcial, bitácora de obra y documentos versionados, con acceso por roles.",
+      en: "A Blazor (.NET 10) web ERP on PostgreSQL: projects with a status workflow and stage-based progress, versioned budgets, finances with approvals and budget alerts, purchase orders with partial receipts, a site log, and versioned documents, with role-based access.",
+    },
+    result: {
+      es: "Entregado en 2026: el control de obras, presupuestos, compras y documentos queda en un solo sistema, con dashboard de indicadores y exportación a Excel.",
+      en: "Delivered in 2026: project, budget, purchasing, and document control live in a single system, with a KPI dashboard and Excel exports.",
+    },
+    features: {
+      es: [
+        "Presupuestos versionados",
+        "Alertas de presupuesto",
+        "Órdenes de compra con recepción parcial",
+        "Bitácora de obra con fotos",
+        "Documentos versionados con hash SHA-256",
+        "Dashboard de KPIs y exportación a Excel",
+      ],
+      en: [
+        "Versioned budgets",
+        "Budget alerts",
+        "Purchase orders with partial receipts",
+        "Site log with photos",
+        "Versioned documents with SHA-256 hashes",
+        "KPI dashboard and Excel export",
+      ],
+    },
+    stack: ["Blazor", ".NET 10", "ASP.NET Core Identity", "PostgreSQL", "EF Core", "Azure Blob Storage"],
+  },
+  {
+    id: "tranki",
+    title: { es: "Tranki", en: "Tranki" },
+    year: 2026,
+    status: "production",
+    image: "/projects/tranki.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "Marketplace de paquetes médicos prepagados para el mercado de salud hondureño: quien compra elige paquetes para sí mismo o para su familia.",
+      en: "A marketplace of prepaid medical packages for the Honduran healthcare market: buyers pick packages for themselves or their family.",
+    },
+    solution: {
+      es: "Plataforma web bilingüe para explorar y comprar paquetes médicos prepagados: catálogo, carrito y checkout que registra un paciente por paquete, precios calculados en el servidor (descuentos por paquete o por edad), pago con tarjeta integrado con Cybersource y 3-D Secure, y un panel administrativo que gestiona paquetes, pedidos y usuarios por roles.",
+      en: "A bilingual web platform for browsing and buying prepaid medical packages: catalog, cart, and a checkout that registers one patient per package, server-side pricing (package or age-based discounts), card payments integrated with Cybersource and 3-D Secure, and an admin panel that manages packages, orders, and users by role.",
+    },
+    result: {
+      es: "En producción en tranki.care, desplegada con Docker Compose (Caddy, API y PostgreSQL).",
+      en: "In production at tranki.care, deployed with Docker Compose (Caddy, API, and PostgreSQL).",
+    },
+    features: {
+      es: [
+        "Catálogo y checkout con un paciente por paquete",
+        "Precios calculados en el servidor",
+        "Pago con tarjeta (Cybersource, 3-D Secure)",
+        "Pedidos con estados e historial",
+        "Panel administrativo con roles",
+        "Correos transaccionales",
+      ],
+      en: [
+        "Catalog and checkout with one patient per package",
+        "Server-side pricing",
+        "Card payments (Cybersource, 3-D Secure)",
+        "Orders with status history",
+        "Role-based admin panel",
+        "Transactional emails",
+      ],
+    },
+    stack: ["React", "Vite", "Tailwind CSS", "Node.js", "Express", "PostgreSQL", "JWT", "Cybersource", "Docker"],
+    url: "https://tranki.care",
+  },
+  {
+    // Proyecto bajo NDA: no nombrar al cliente ni detalles internos sin su autorización.
+    id: "campo-eudr",
+    title: {
+      es: "App de Levantamiento de Datos de Campo para EUDR",
+      en: "Offline-First Field Data App for EUDR",
+    },
+    client: {
+      es: "Cliente del sector café (confidencial)",
+      en: "Coffee-sector client (confidential)",
+    },
+    year: 2026,
+    status: "pilot",
+    image: "/projects/campo-eudr.svg",
+    imageAlt: { es: "", en: "" },
+    context: {
+      es: "El reglamento europeo contra la deforestación (EUDR) exige demostrar que el café no proviene de tierras deforestadas después de 2020, y los datos de cada finca se levantan en zonas rurales con señal intermitente.",
+      en: "The EU Deforestation Regulation (EUDR) requires proof that coffee does not come from land deforested after 2020, and each farm's data is collected in rural areas with unreliable signal.",
+    },
+    solution: {
+      es: "App móvil en Flutter que funciona sin conexión —encuesta con lógica condicional, perímetro de la parcela recorrido con GPS y registro de consentimientos— con almacenamiento cifrado y una cola que sincroniza con un backend FastAPI/PostgreSQL sin duplicar registros.",
+      en: "An offline-first Flutter mobile app — conditional survey, GPS-walked plot boundary, and consent capture — with encrypted storage and a queue that syncs to a FastAPI/PostgreSQL backend without duplicating records.",
+    },
+    result: {
+      es: "En piloto de campo, con una bitácora de auditoría a prueba de manipulaciones, encadenada por hash SHA-256 en el servidor.",
+      en: "In a field pilot, with a tamper-evident audit log hash-chained with SHA-256 on the server.",
+    },
+    features: {
+      es: [
+        "Encuestas con lógica condicional",
+        "Perímetro de parcela por GPS",
+        "Cifrado en el dispositivo",
+        "Sincronización offline sin duplicados",
+        "Bitácora de auditoría encadenada por hash",
+      ],
+      en: [
+        "Conditional survey logic",
+        "GPS plot boundary",
+        "On-device encryption",
+        "Duplicate-free offline sync",
+        "Hash-chained audit log",
+      ],
+    },
+    stack: ["Flutter", "Dart", "Hive", "Python", "FastAPI", "PostgreSQL"],
+  },
+];
 
 export const cv: CV = {
   profile: {
@@ -88,333 +422,7 @@ export const cv: CV = {
     },
   ],
 
-  // Las imágenes de /public/projects son provisionales. Al reemplazarlas por
-  // capturas reales, actualiza `image` y describe la captura en `imageAlt`
-  // (un alt vacío indica que la imagen es decorativa).
-  projects: [
-    {
-      // Proyecto confidencial: no nombrar al cliente, el producto ni sus sistemas internos.
-      id: "crm-rust",
-      title: { es: "Plataforma CRM Unificada en Rust", en: "Unified CRM Platform in Rust" },
-      client: { es: "Cliente confidencial", en: "Confidential client" },
-      year: 2025,
-      ongoing: true,
-      status: "production",
-      image: "/projects/crm-rust.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "Los datos de clientes, oportunidades, contratos y cotizaciones estaban repartidos en cuatro sistemas internos heredados.",
-        en: "Customer, opportunity, contract, and quoting data was spread across four legacy internal systems.",
-      },
-      solution: {
-        es: "Plataforma web en Rust (Actix-web) sobre PostgreSQL que unifica los datos de cuatro sistemas heredados en una sola experiencia de CRM, ventas y cotizaciones —empresas, contactos, oportunidades, propuestas y actividades—, con interfaz HTML-first (HTMX + Handlebars) y seguridad a nivel de fila.",
-        en: "A Rust (Actix-web) web platform on PostgreSQL that unifies data from four legacy systems into a single CRM, sales, and quoting experience — companies, contacts, opportunities, proposals, and activities — with an HTML-first UI (HTMX + Handlebars) and row-level security.",
-      },
-      result: {
-        es: "En producción y en desarrollo continuo: CRM, ventas y cotizaciones en una sola plataforma, con dashboards de pronóstico y de actividad y un registro de auditoría automático.",
-        en: "In production and under active development: CRM, sales, and quoting in one platform, with forecast and activity dashboards and an automatic audit trail.",
-      },
-      features: {
-        es: [
-          "Empresas, contactos, oportunidades y propuestas",
-          "Registro y seguimiento de actividades",
-          "Dashboards de pronóstico y KPIs",
-          "Acceso por roles con Row-Level Security",
-          "Auditoría automática con triggers de PostgreSQL",
-          "Exportación de reportes (XLSX, CSV, PDF)",
-        ],
-        en: [
-          "Companies, contacts, opportunities, and proposals",
-          "Activity logging and follow-ups",
-          "Forecast and KPI dashboards",
-          "Role-based access with row-level security",
-          "Automatic audit trail via PostgreSQL triggers",
-          "Report export (XLSX, CSV, PDF)",
-        ],
-      },
-      stack: ["Rust", "Actix-web", "PostgreSQL", "SQLx", "HTMX", "Handlebars", "Docker", "OpenTelemetry"],
-      url: "https://unified.circlemsp.com",
-    },
-    {
-      // Datos tomados de los repositorios y del informe del proyecto (13-oct-2026).
-      // NENO lo desarrolla otro equipo: aquí se describe su integración con la tienda.
-      id: "la-universal",
-      title: { es: "Tienda en Línea La Universal", en: "La Universal Online Store" },
-      client: { es: "ACOSA", en: "ACOSA" },
-      year: 2026,
-      status: "production",
-      image: "/projects/la-universal.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "La Universal necesitaba una tienda en línea propia para su catálogo de tecnología y hogar, alimentada con los artículos, precios y existencias de su ERP, y un panel para administrarla.",
-        en: "La Universal needed its own online store for its technology and home catalog, fed with the items, prices, and stock from its ERP, plus an admin panel to run it.",
-      },
-      solution: {
-        es: "Tienda y panel de administración en Next.js sobre una API propia en Node.js (Fastify) y PostgreSQL, con buscador tolerante a errores, montos calculados en el servidor y sincronización con el ERP que se simula y se puede revertir. Integra a NENO, el asistente virtual de la tienda, que guía al cliente y solo ejecuta acciones de una lista cerrada, sin tocar precios ni confirmar pedidos.",
-        en: "A storefront and admin panel in Next.js on a custom Node.js (Fastify) and PostgreSQL API, with typo-tolerant search, server-computed amounts, and an ERP sync that can be dry-run and rolled back. It integrates NENO, the store's virtual assistant, which guides customers and only runs actions from a closed list, never touching prices or confirming orders.",
-      },
-      result: {
-        es: "En producción y abierta al público desde octubre de 2026, hoy en launiversal.com.ni, con el catálogo sincronizado con el ERP y más de 2600 pruebas automáticas en el backend.",
-        en: "In production and open to the public since October 2026, now at launiversal.com.ni, with the catalog synced from the ERP and more than 2,600 automated backend tests.",
-      },
-      features: {
-        es: [
-          "Buscador con sugerencias y tolerancia a errores",
-          "Sincronización con el ERP: simulación, frenos y reversión",
-          "Asistente NENO con acciones de lista cerrada",
-          "Transferencia con comprobante o pago al retirar",
-          "Cupones, campañas y correos automáticos",
-          "Panel con permisos por rol y auditoría",
-        ],
-        en: [
-          "Search with suggestions and typo tolerance",
-          "ERP sync with dry runs, safety brakes, and rollback",
-          "NENO assistant with a closed list of actions",
-          "Bank transfer with receipt or pay at pickup",
-          "Coupons, campaigns, and automated emails",
-          "Role-based admin panel with audit trail",
-        ],
-      },
-      stack: ["Next.js", "React", "TypeScript", "Tailwind CSS", "Node.js", "Fastify", "PostgreSQL", "Vitest", "Playwright", "Docker", "AWS"],
-      url: "https://www.launiversal.com.ni",
-    },
-    {
-      // Proyecto confidencial: no nombrar el producto, la empresa, sus proveedores ni su infraestructura.
-      id: "campanas-multicanal",
-      title: {
-        es: "Sistema de Campañas Multicanal con IA",
-        en: "AI-Assisted Multichannel Campaign System",
-      },
-      client: { es: "Proyecto confidencial", en: "Confidential project" },
-      year: 2026,
-      status: "development",
-      image: "/projects/campanas-multicanal.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "Preparar una campaña multicanal tomaba días de trabajo manual —buscar empresas, encontrar contactos, verificar correos, quitar duplicados y adaptar formatos y mensajes—, y cada canal terminaba trabajando con una lista distinta.",
-        en: "Putting together a multichannel campaign took days of manual work — finding companies and contacts, verifying emails, removing duplicates, and adapting formats and messages — and each channel ended up working from a different list.",
-      },
-      solution: {
-        es: "Aplicación web que convierte un perfil de cliente ideal en campañas para cuatro canales —correo en frío, mensajes directos y anuncios en la red profesional, y anuncios en redes sociales— sobre una única audiencia: enriquece, verifica y segmenta los contactos, y usa un LLM (API de Claude) para redactar mensajes a medida, clasificar respuestas y proponer borradores. API en FastAPI sobre PostgreSQL con frontend en React; todo envío o lanzamiento lo confirma una persona.",
-        en: "A web app that turns an ideal customer profile into campaigns for four channels — cold email, direct messages and ads on the professional network, and social media ads — built on a single audience: it enriches, verifies, and segments contacts, and uses an LLM (Claude API) to write tailored messages, classify replies, and draft responses. A FastAPI API on PostgreSQL with a React frontend; every send or launch is confirmed by a person.",
-      },
-      result: {
-        es: "En desarrollo: los módulos de datos, audiencias, correo, respuestas y panel de métricas están construidos y probados en un entorno de demostración con Docker y datos sintéticos.",
-        en: "In development: the data, audience, email, reply, and metrics-dashboard modules are built and tested in a Docker demo environment with synthetic data.",
-      },
-      features: {
-        es: [
-          "Perfil de cliente ideal y buyer personas versionados",
-          "Enriquecimiento, verificación y deduplicación de contactos",
-          "Una sola audiencia para cuatro canales",
-          "Mensajes y borradores de respuesta con LLM",
-          "Confirmación humana antes de enviar o lanzar",
-          "Tope de gasto y registro de costos",
-        ],
-        en: [
-          "Versioned ideal customer profile and buyer personas",
-          "Contact enrichment, verification, and deduplication",
-          "A single audience across four channels",
-          "LLM-written messages and reply drafts",
-          "Human confirmation before sending or launching",
-          "Spending cap and cost logging",
-        ],
-      },
-      stack: ["Python", "FastAPI", "PostgreSQL", "React", "TypeScript", "Claude API", "Docker", "Playwright"],
-    },
-    {
-      // Une el sitio de ventas y la webapp de fletes (antes eran dos tarjetas); el ERP va aparte.
-      id: "ferrexpress-ventas-fletes",
-      title: { es: "Plataforma Web de Ventas y Fletes Ferrexpress", en: "Ferrexpress Sales & Freight Web Platform" },
-      client: { es: "Ferrexpress", en: "Ferrexpress" },
-      year: 2024,
-      status: "delivered",
-      image: "/projects/ferrexpress-ventas-fletes.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "Ferrexpress necesitaba un canal de ventas en línea que integrara la gestión de productos y la atención al cliente, y coordinar su operación logística: rutas, conductores, vehículos y el seguimiento de cada entrega.",
-        en: "Ferrexpress needed an online sales channel that brought together product management and customer service, and a way to coordinate its logistics: routes, drivers, vehicles, and tracking for every delivery.",
-      },
-      solution: {
-        es: "Sitio de ventas con catálogo interactivo, pago en línea con Stripe y seguimiento de pedidos, y gestión de fletes con rutas, conductores, vehículos y entregas en tiempo real (SignalR y Google Maps), en Blazor y ASP.NET Core sobre SQL Server en Azure.",
-        en: "A sales site with an interactive catalog, Stripe online payments, and order tracking, plus freight management with routes, drivers, vehicles, and real-time deliveries (SignalR and Google Maps), built with Blazor and ASP.NET Core on SQL Server in Azure.",
-      },
-      result: {
-        es: "Entregada: ventas, catálogo, pedidos y fletes centralizados, con informes de rendimiento y costos.",
-        en: "Delivered: sales, catalog, orders, and freight in one place, with performance and cost reports.",
-      },
-      features: {
-        es: [
-          "Catálogo interactivo",
-          "Pago en línea con Stripe",
-          "Seguimiento de pedidos",
-          "Creación y control de fletes",
-          "Rutas, conductores y vehículos",
-          "Seguimiento de entregas en tiempo real",
-        ],
-        en: [
-          "Interactive catalog",
-          "Stripe online payments",
-          "Order tracking",
-          "Freight creation and control",
-          "Routes, drivers, and vehicles",
-          "Real-time delivery tracking",
-        ],
-      },
-      stack: ["Blazor", "ASP.NET Core", "SQL Server", "Azure", "Stripe API", "SignalR", "Google Maps API"],
-    },
-    {
-      id: "asegure-nominas",
-      title: { es: "Automatización de Nóminas ASEGURE", en: "ASEGURE Payroll Automation" },
-      client: { es: "ASEGURE", en: "ASEGURE" },
-      year: 2023,
-      status: "production",
-      image: "/projects/asegure-nominas.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "La generación de nóminas de ASEGURE involucraba cálculos complejos y debía integrarse con los sistemas contables existentes.",
-        en: "ASEGURE's payroll generation involved complex calculations and had to integrate with the existing accounting systems.",
-      },
-      solution: {
-        es: "Herramientas en C# con procesamiento por lotes, cálculos automáticos y consultas SQL optimizadas, integradas con el ERP y con reportes en Power BI.",
-        en: "C# tools with batch processing, automated calculations, and optimized SQL queries, integrated with the ERP and with Power BI reporting.",
-      },
-      result: {
-        es: "En producción: automatizan la generación de nóminas y alimentan los reportes de BI.",
-        en: "In production: they automate payroll generation and feed the BI reports.",
-      },
-      features: {
-        es: ["Procesamiento batch", "Cálculos automáticos", "Integración con ERP", "Reportes BI"],
-        en: ["Batch processing", "Automated calculations", "ERP integration", "BI reports"],
-      },
-      stack: ["C#", "SQL Server", "Entity Framework", "Azure SQL", "Power BI"],
-    },
-    {
-      id: "ferrexpress-erp",
-      title: { es: "ERP de Proyectos de Construcción Ferrexpress", en: "Ferrexpress Construction Projects ERP" },
-      client: { es: "Ferrexpress", en: "Ferrexpress" },
-      year: 2026,
-      status: "delivered",
-      image: "/projects/ferrexpress-erp.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "Ferrexpress necesitaba controlar todas sus obras de construcción en un solo lugar: presupuestos, gastos, compras, avance y documentación.",
-        en: "Ferrexpress needed to manage all of its construction projects in one place: budgets, expenses, purchasing, progress, and documentation.",
-      },
-      solution: {
-        es: "ERP web en Blazor (.NET 10) con PostgreSQL: obras con flujo de estados y avance por etapas, presupuestos versionados, finanzas con aprobaciones y alertas de presupuesto, órdenes de compra con recepción parcial, bitácora de obra y documentos versionados, con acceso por roles.",
-        en: "A Blazor (.NET 10) web ERP on PostgreSQL: projects with a status workflow and stage-based progress, versioned budgets, finances with approvals and budget alerts, purchase orders with partial receipts, a site log, and versioned documents, with role-based access.",
-      },
-      result: {
-        es: "Entregado en 2026: el control de obras, presupuestos, compras y documentos queda en un solo sistema, con dashboard de indicadores y exportación a Excel.",
-        en: "Delivered in 2026: project, budget, purchasing, and document control live in a single system, with a KPI dashboard and Excel exports.",
-      },
-      features: {
-        es: [
-          "Presupuestos versionados",
-          "Alertas de presupuesto",
-          "Órdenes de compra con recepción parcial",
-          "Bitácora de obra con fotos",
-          "Documentos versionados con hash SHA-256",
-          "Dashboard de KPIs y exportación a Excel",
-        ],
-        en: [
-          "Versioned budgets",
-          "Budget alerts",
-          "Purchase orders with partial receipts",
-          "Site log with photos",
-          "Versioned documents with SHA-256 hashes",
-          "KPI dashboard and Excel export",
-        ],
-      },
-      stack: ["Blazor", ".NET 10", "ASP.NET Core Identity", "PostgreSQL", "EF Core", "Azure Blob Storage"],
-    },
-    {
-      id: "tranki",
-      title: { es: "Tranki", en: "Tranki" },
-      year: 2026,
-      status: "production",
-      image: "/projects/tranki.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "Marketplace de paquetes médicos prepagados para el mercado de salud hondureño: quien compra elige paquetes para sí mismo o para su familia.",
-        en: "A marketplace of prepaid medical packages for the Honduran healthcare market: buyers pick packages for themselves or their family.",
-      },
-      solution: {
-        es: "Plataforma web bilingüe para explorar y comprar paquetes médicos prepagados: catálogo, carrito y checkout que registra un paciente por paquete, precios calculados en el servidor (descuentos por paquete o por edad), pago con tarjeta integrado con Cybersource y 3-D Secure, y un panel administrativo que gestiona paquetes, pedidos y usuarios por roles.",
-        en: "A bilingual web platform for browsing and buying prepaid medical packages: catalog, cart, and a checkout that registers one patient per package, server-side pricing (package or age-based discounts), card payments integrated with Cybersource and 3-D Secure, and an admin panel that manages packages, orders, and users by role.",
-      },
-      result: {
-        es: "En producción en tranki.care, desplegada con Docker Compose (Caddy, API y PostgreSQL).",
-        en: "In production at tranki.care, deployed with Docker Compose (Caddy, API, and PostgreSQL).",
-      },
-      features: {
-        es: [
-          "Catálogo y checkout con un paciente por paquete",
-          "Precios calculados en el servidor",
-          "Pago con tarjeta (Cybersource, 3-D Secure)",
-          "Pedidos con estados e historial",
-          "Panel administrativo con roles",
-          "Correos transaccionales",
-        ],
-        en: [
-          "Catalog and checkout with one patient per package",
-          "Server-side pricing",
-          "Card payments (Cybersource, 3-D Secure)",
-          "Orders with status history",
-          "Role-based admin panel",
-          "Transactional emails",
-        ],
-      },
-      stack: ["React", "Vite", "Tailwind CSS", "Node.js", "Express", "PostgreSQL", "JWT", "Cybersource", "Docker"],
-      url: "https://tranki.care",
-    },
-    {
-      // Proyecto bajo NDA: no nombrar al cliente ni detalles internos sin su autorización.
-      id: "campo-eudr",
-      title: {
-        es: "App de Levantamiento de Datos de Campo para EUDR",
-        en: "Offline-First Field Data App for EUDR",
-      },
-      client: {
-        es: "Cliente del sector café (confidencial)",
-        en: "Coffee-sector client (confidential)",
-      },
-      year: 2026,
-      status: "pilot",
-      image: "/projects/campo-eudr.svg",
-      imageAlt: { es: "", en: "" },
-      context: {
-        es: "El reglamento europeo contra la deforestación (EUDR) exige demostrar que el café no proviene de tierras deforestadas después de 2020, y los datos de cada finca se levantan en zonas rurales con señal intermitente.",
-        en: "The EU Deforestation Regulation (EUDR) requires proof that coffee does not come from land deforested after 2020, and each farm's data is collected in rural areas with unreliable signal.",
-      },
-      solution: {
-        es: "App móvil en Flutter que funciona sin conexión —encuesta con lógica condicional, perímetro de la parcela recorrido con GPS y registro de consentimientos— con almacenamiento cifrado y una cola que sincroniza con un backend FastAPI/PostgreSQL sin duplicar registros.",
-        en: "An offline-first Flutter mobile app — conditional survey, GPS-walked plot boundary, and consent capture — with encrypted storage and a queue that syncs to a FastAPI/PostgreSQL backend without duplicating records.",
-      },
-      result: {
-        es: "En piloto de campo, con una bitácora de auditoría a prueba de manipulaciones, encadenada por hash SHA-256 en el servidor.",
-        en: "In a field pilot, with a tamper-evident audit log hash-chained with SHA-256 on the server.",
-      },
-      features: {
-        es: [
-          "Encuestas con lógica condicional",
-          "Perímetro de parcela por GPS",
-          "Cifrado en el dispositivo",
-          "Sincronización offline sin duplicados",
-          "Bitácora de auditoría encadenada por hash",
-        ],
-        en: [
-          "Conditional survey logic",
-          "GPS plot boundary",
-          "On-device encryption",
-          "Duplicate-free offline sync",
-          "Hash-chained audit log",
-        ],
-      },
-      stack: ["Flutter", "Dart", "Hive", "Python", "FastAPI", "PostgreSQL"],
-    },
-  ],
+  projects,
 
   // Títulos, autores, resúmenes y palabras clave tomados de las páginas oficiales
   // (Springer / IEEE Xplore). Los resúmenes en español son traducciones del original.
