@@ -54,8 +54,13 @@ export const reveal = {
   maxLanes: 4,
 } as const;
 
-/** Barra de navegación: píxeles de scroll a partir de los que se compacta. */
-export const header = { compactAfter: 16 } as const;
+/** Barra de navegación. */
+export const header = {
+  /** Píxeles de scroll a partir de los que se compacta. */
+  compactAfter: 16,
+  /** Altura de la ventana (0 arriba, 1 abajo) en la que una sección pasa a ser la activa. */
+  spyLine: 0.4,
+} as const;
 
 /** Botones magnéticos: cuánto siguen al cursor y hasta dónde, en px. */
 export const magnetic = { strength: 0.3, max: distance.sm / 2 } as const;

@@ -10,8 +10,14 @@ import { useMotionReady } from "./motion-provider";
  */
 
 const MagneticFieldImpl = dynamic(() => import("./magnetic-field"), { ssr: false });
+const ScrollProgressImpl = dynamic(() => import("./scroll-progress"), { ssr: false });
 
 /** Activa todos los `<Magnetic>` de la página. */
 export function MagneticField() {
   return useMotionReady() ? <MagneticFieldImpl /> : null;
+}
+
+/** Barra de progreso de lectura de la navegación. */
+export function ScrollProgress() {
+  return useMotionReady() ? <ScrollProgressImpl /> : null;
 }

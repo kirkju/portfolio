@@ -173,8 +173,7 @@
 }
 
 /* ---------- Animaciones (solo si el usuario no pidió reducir el movimiento) ---------- */
-/* Ocultos salvo donde el navegador anima con el scroll (más abajo). */
-.scroll-progress,
+/* Oculta salvo donde el navegador anima con el scroll (más abajo). */
 .timeline-fill {
   display: none;
 }
@@ -203,28 +202,12 @@
   }
 }
 
-@keyframes draw-x {
-  from {
-    scale: 0 1;
-  }
-  to {
-    scale: 1 1;
-  }
-}
-
 @keyframes draw-y {
   from {
     scale: 1 0;
   }
   to {
     scale: 1 1;
-  }
-}
-
-@keyframes header-elevate {
-  to {
-    background-color: color-mix(in oklab, var(--bg) 88%, transparent);
-    box-shadow: var(--header-shadow);
   }
 }
 
@@ -237,12 +220,6 @@
 @keyframes vt-fade-in {
   from {
     opacity: 0;
-  }
-}
-
-@keyframes vt-rise {
-  from {
-    translate: 0 0.5rem;
   }
 }
 
@@ -345,21 +322,96 @@
   }
 }
 
-/* Indicadores ligados al scroll del propio usuario (no se mueven solos). */
-@supports (animation-timeline: scroll()) {
-  /* Barra fina de progreso de lectura bajo la barra de navegación. */
-  .scroll-progress {
-    display: block;
-    transform-origin: left;
-    animation: draw-x linear both;
-    animation-timeline: scroll(root block);
+/* ---------- Barra de navegación ----------
+   La caja de la barra mide siempre --header-h. Tras los primeros píxeles de scroll
+   (`data-scrolled` en <html>, ver lib/motion-init.ts) se compacta sin tocar el layout:
+   el fondo se encoge con scaleY y la fila sube la mitad de la diferencia. Arriba del
+   todo el fondo es transparente; sin JavaScript se queda siempre visible. */
+:root {
+  --header-h: 4rem;
+  /* Proporción de la altura compacta (3.5rem) respecto a la normal. */
+  --header-compact: 0.875;
+  --header-lift: calc((1 - var(--header-compact)) * var(--header-h));
+}
+
+.header-bg {
+  box-shadow: var(--header-shadow);
+  transform-origin: top;
+  transition:
+    opacity var(--m-dur-ui) var(--m-ease-out),
+    transform var(--m-dur-ui) var(--m-ease-out);
+}
+
+.header-row,
+.header-progress {
+  transition: transform var(--m-dur-ui) var(--m-ease-out);
+}
+
+html[data-js]:not([data-scrolled]) .header-bg {
+  opacity: 0;
+}
+
+/* Con el menú móvil abierto la barra siempre lleva fondo, también arriba del todo. */
+html[data-js] .site-header:has(.mobile-panel:not([hidden])) .header-bg {
+  opacity: 1;
+}
+
+html[data-scrolled] .header-bg {
+  transform: scaleY(var(--header-compact));
+}
+
+html[data-scrolled] .header-row {
+  transform: translateY(calc(var(--header-lift) / -2));
+}
+
+/* La barra de progreso y el panel del menú siguen al borde inferior del fondo. */
+html[data-scrolled] .header-progress {
+  transform: translateY(calc(var(--header-lift) * -1));
+}
+
+/* Menú móvil: el panel baja y sus enlaces entran escalonados; al cerrar se recoge.
+   `display` se anima como propiedad discreta para que la salida llegue a verse. */
+.mobile-panel {
+  transition:
+    opacity var(--m-dur-ui) var(--m-ease-out),
+    transform var(--m-dur-ui) var(--m-ease-out),
+    display var(--m-dur-ui) allow-discrete;
+}
+
+/* El panel cuelga de la fila, que ya subió la mitad: aquí sube la otra mitad. */
+html[data-scrolled] .mobile-panel {
+  transform: translateY(calc(var(--header-lift) / -2));
+}
+
+.mobile-panel[hidden] {
+  opacity: 0;
+  transform: translateY(calc(var(--header-lift) / -2 - var(--m-shift-sm)));
+}
+
+.mobile-panel-item {
+  transition:
+    opacity var(--m-dur-ui) var(--m-ease-out),
+    transform var(--m-dur-ui) var(--m-ease-out);
+}
+
+.mobile-panel:not([hidden]) .mobile-panel-item {
+  transition-delay: calc(var(--i, 0) * var(--m-stagger-fast));
+}
+
+.mobile-panel[hidden] .mobile-panel-item {
+  opacity: 0;
+  transform: translateY(var(--m-shift-sm));
+}
+
+@starting-style {
+  .mobile-panel:not([hidden]) {
+    opacity: 0;
+    transform: translateY(calc(var(--header-lift) / -2 - var(--m-shift-sm)));
   }
 
-  /* La barra de navegación gana opacidad y sombra en los primeros 8rem de scroll. */
-  .site-header {
-    animation: header-elevate linear both;
-    animation-timeline: scroll(root block);
-    animation-range: 0 8rem;
+  .mobile-panel:not([hidden]) .mobile-panel-item {
+    opacity: 0;
+    transform: translateY(var(--m-shift-sm));
   }
 }
 
@@ -468,32 +520,33 @@
     types: page;
   }
 
+  /* Fundido cruzado: la página que sale y la que entra usan la misma curva, así lo que
+     no cambia (maquetación, tarjetas, imágenes) no parpadea y solo se funde el texto. */
   html:active-view-transition-type(page)::view-transition-old(root) {
-    animation: vt-fade-out 0.18s ease-in both;
+    animation: vt-fade-out var(--m-dur-ui) var(--m-ease-in-out) both;
   }
 
   html:active-view-transition-type(page)::view-transition-new(root) {
-    animation:
-      vt-fade-in 0.36s var(--ease) both,
-      vt-rise 0.36s var(--ease) both;
+    animation: vt-fade-in var(--m-dur-ui) var(--m-ease-in-out) both;
   }
 
+  /* La pastilla del idioma activo se desliza con el spring del sistema. */
   ::view-transition-group(lang-active) {
-    animation-duration: 0.4s;
-    animation-timing-function: var(--ease);
+    animation-duration: var(--m-dur-spring);
+    animation-timing-function: var(--m-ease-spring);
   }
 
-  /* Cambio de tema (ver ThemeToggle): fundido simple, sin desplazamiento. */
+  /* Cambio de tema (ver ThemeToggle): el mismo fundido cruzado. */
   html[data-theme-switching]::view-transition-old(root) {
-    animation: vt-fade-out 0.3s ease both;
+    animation: vt-fade-out var(--m-dur-ui) var(--m-ease-in-out) both;
   }
 
   html[data-theme-switching]::view-transition-new(root) {
-    animation: vt-fade-in 0.3s ease both;
+    animation: vt-fade-in var(--m-dur-ui) var(--m-ease-in-out) both;
   }
 
   html[data-theme-switching]::view-transition-group(*) {
-    animation-duration: 0.3s;
+    animation-duration: var(--m-dur-ui);
   }
 }
 
@@ -953,8 +1006,7 @@ html[data-vt] .project-dialog .dialog-panel {
   }
 
   .reveal,
-  .rise,
-  .site-header {
+  .rise {
     animation: none !important;
   }
 
@@ -966,7 +1018,7 @@ html[data-vt] .project-dialog .dialog-panel {
     transform: none !important;
   }
 
-  .scroll-progress,
+  .header-progress,
   .timeline-fill {
     display: none !important;
   }

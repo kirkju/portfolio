@@ -1,11 +1,13 @@
 import { DownloadIcon } from "@/components/icons";
 import { Monogram } from "@/components/monogram";
+import { ScrollProgress } from "@/components/motion/deferred";
 import { buttonClasses } from "@/components/ui/button-link";
 import { cv } from "@/data/cv";
 import { ui, type SectionKey } from "@/data/ui";
 import type { Locale } from "@/lib/i18n";
 import { LanguageSwitch } from "./language-switch";
 import { MobileMenu } from "./mobile-menu";
+import { NavLinks } from "./nav-links";
 import { ThemeToggle } from "./theme-toggle";
 
 const sections: readonly SectionKey[] = [
@@ -24,35 +26,26 @@ export function Navbar({ locale }: { locale: Locale }) {
   const cvHref = cv.profile.cvPdf[locale];
 
   return (
-    <header className="site-header fixed inset-x-0 top-0 z-50 border-b border-border/70 bg-bg/70 backdrop-blur-md">
-      {/* Progreso de lectura: solo en navegadores con animaciones ligadas al scroll. */}
-      <span aria-hidden="true" className="scroll-progress absolute inset-x-0 -bottom-px h-px bg-accent/80" />
-      <div className="wrapper relative flex h-16 items-center justify-between gap-4">
+    // La caja de la barra no cambia de tamaño: al hacer scroll se compacta moviendo solo
+    // sus capas con transform (ver "Barra de navegación" en globals.css). Por eso los
+    // clics se habilitan en la fila y no en toda la caja.
+    <header className="site-header pointer-events-none fixed inset-x-0 top-0 z-50">
+      {/* Fondo con blur, borde y sombra: capa aparte que aparece y se encoge al hacer scroll. */}
+      <span aria-hidden="true" className="header-bg absolute inset-0 border-b border-border/70 bg-bg/80 backdrop-blur-md" />
+      <ScrollProgress />
+      <div className="header-row wrapper pointer-events-auto relative flex h-16 items-center justify-between gap-4">
         <a
           href={`#${t.sectionIds.home}`}
           className="group flex shrink-0 items-center gap-2.5 rounded-md font-mono text-sm font-semibold tracking-tight whitespace-nowrap text-heading"
         >
-          <span className="grid size-8 place-items-center rounded-lg bg-brand ring-1 ring-white/10 transition duration-300 ease-smooth group-hover:ring-accent/60 motion-safe:group-hover:-rotate-6 motion-safe:group-active:scale-90">
+          <span className="grid size-8 place-items-center rounded-lg bg-brand ring-1 ring-white/10 transition duration-ui ease-smooth group-hover:ring-accent/60 motion-safe:group-hover:-rotate-6 motion-safe:group-active:scale-90">
             <Monogram className="size-6" />
           </span>
           {/* Entre 1280 y 1535 px la barra muestra todos los enlaces: ahí basta el monograma. */}
           <span className="sr-only sm:not-sr-only xl:sr-only 2xl:not-sr-only">{cv.profile.name}</span>
         </a>
 
-        <nav aria-label={t.nav.label} className="hidden xl:block">
-          <ul className="flex items-center gap-1">
-            {links.map((link) => (
-              <li key={link.href}>
-                <a
-                  href={link.href}
-                  className="rounded-full px-3 py-2 text-sm whitespace-nowrap text-muted transition-colors duration-200 hover:bg-surface-2 hover:text-fg active:bg-surface-2/60"
-                >
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <NavLinks links={links} label={t.nav.label} />
 
         <div className="flex items-center gap-1.5 sm:gap-2">
           <LanguageSwitch locale={locale} className="hidden sm:flex" />

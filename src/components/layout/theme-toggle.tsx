@@ -53,7 +53,7 @@ type ThemeToggleProps = {
 };
 
 // Los dos iconos están siempre en el DOM y se cruzan girando; el tema activo decide cuál se ve.
-const iconClasses = "absolute inset-0 size-full transition duration-500 ease-smooth";
+const iconClasses = "absolute inset-0 size-full transition duration-enter ease-smooth";
 
 export function ThemeToggle({ labels, className }: ThemeToggleProps) {
   const theme = useSyncExternalStore(subscribe, getTheme, getServerTheme);
@@ -77,7 +77,7 @@ export function ThemeToggle({ labels, className }: ThemeToggleProps) {
       aria-label={labels.label}
       title={isDark ? labels.toLight : labels.toDark}
       className={cn(
-        "inline-flex size-9 items-center justify-center rounded-full text-muted transition duration-200 ease-smooth hover:bg-surface-2 hover:text-fg motion-safe:active:scale-90",
+        "inline-flex size-9 items-center justify-center rounded-full text-muted transition duration-micro ease-smooth hover:bg-surface-2 hover:text-fg motion-safe:active:scale-90",
         className,
       )}
     >
