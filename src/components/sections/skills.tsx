@@ -1,5 +1,6 @@
-import type { ComponentType, CSSProperties, SVGProps } from "react";
+import type { ComponentType, SVGProps } from "react";
 import { CloudIcon, CodeIcon, DatabaseIcon, LayersIcon, SparkIcon } from "@/components/icons";
+import { Reveal, Stagger } from "@/components/motion/reveal";
 import { Section } from "@/components/ui/section";
 import { cv } from "@/data/cv";
 import type { SkillGroup } from "@/data/types";
@@ -33,38 +34,37 @@ export function Skills({ locale }: { locale: Locale }) {
           const Icon = icons[group.id];
           const featured = group.id === "ai";
           return (
-            <li key={group.id} className={cn("reveal flex", spans[group.id])}>
+            // Grupo por grupo: entra la tarjeta y, enseguida, sus chips en cascada rápida.
+            <Reveal as="li" key={group.id} className={cn("flex", spans[group.id])}>
               <article
                 className={cn(
-                  "skill-card spotlight group relative w-full overflow-hidden rounded-2xl border bg-surface p-6 shadow-card transition duration-300 ease-smooth hover:shadow-card-hover sm:p-7",
+                  "spotlight group relative w-full overflow-hidden rounded-2xl border bg-surface p-6 shadow-card transition duration-ui ease-smooth hover:shadow-card-hover sm:p-7",
                   featured
                     ? "border-accent/40 bg-[radial-gradient(120%_120%_at_100%_0%,var(--glow-accent),transparent_60%)]"
                     : "border-border hover:border-accent/40",
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <span className="grid size-10 place-items-center rounded-xl border border-border bg-surface-2 text-accent transition duration-500 ease-smooth group-hover:border-accent/40 motion-safe:group-hover:-rotate-6 motion-safe:group-hover:scale-110">
+                  <span className="grid size-10 place-items-center rounded-xl border border-border bg-surface-2 text-accent transition duration-enter ease-smooth group-hover:border-accent/40 motion-safe:group-hover:-rotate-6 motion-safe:group-hover:scale-110">
                     <Icon className="size-5" />
                   </span>
                   <h3 className="text-base font-semibold tracking-tight">{group.title[locale]}</h3>
                 </div>
-                <ul className="mt-6 flex flex-wrap gap-2">
-                  {group.items.map((item, i) => {
+                <Stagger as="ul" speed="fast" className="mt-6 flex flex-wrap gap-2">
+                  {group.items.map((item) => {
                     const label = pick(item, locale);
                     return (
-                      // Los chips entran escalonados con el scroll (`.chip` en globals.css).
                       <li
                         key={label}
-                        style={{ "--i": i } as CSSProperties}
-                        className="chip rounded-lg border border-border bg-bg/60 px-3 py-1.5 text-sm text-fg transition-colors duration-200 hover:border-accent/50 hover:text-heading"
+                        className="rounded-lg border border-border bg-bg/60 px-3 py-1.5 text-sm text-fg transition-colors duration-micro hover:border-accent/50 hover:text-heading"
                       >
                         {label}
                       </li>
                     );
                   })}
-                </ul>
+                </Stagger>
               </article>
-            </li>
+            </Reveal>
           );
         })}
       </ul>

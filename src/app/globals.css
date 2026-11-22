@@ -955,20 +955,11 @@ html[data-vt] .project-dialog .dialog-panel {
   display: inline-block;
 }
 
+/* ---------- Bucles de ambiente ---------- */
 @media (prefers-reduced-motion: no-preference) {
+  /* Carrusel móvil: las tarjetas que se van por los lados se encogen un poco. Va ligado
+     al gesto del propio usuario (mejora progresiva donde hay animaciones de scroll). */
   @supports (animation-timeline: view()) {
-    /* Habilidades: los chips aparecen en cascada mientras entra su tarjeta. */
-    .skill-card {
-      view-timeline: --skill block;
-    }
-
-    .skill-card .chip {
-      animation: chip-in var(--ease) both;
-      animation-timeline: --skill;
-      animation-range: entry calc(min(var(--i, 0), 10) * 5%) entry calc(50% + min(var(--i, 0), 10) * 5%);
-    }
-
-    /* Carrusel móvil: las tarjetas que se van por los lados se encogen un poco. */
     @media (width < 48rem) {
       .carousel-card {
         animation: carousel-focus linear both;
@@ -992,13 +983,6 @@ html[data-vt] .project-dialog .dialog-panel {
 
   .swipe-hint {
     animation: swipe var(--m-loop-pulse) var(--m-ease-out) 3;
-  }
-}
-
-@keyframes chip-in {
-  from {
-    translate: 0 0.75rem;
-    scale: 0.9;
   }
 }
 
