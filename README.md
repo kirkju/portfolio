@@ -1,138 +1,159 @@
-# Alejandro Vargas — CV digital
+# Alejandro Vargas — CV and portfolio
 
-CV digital y portafolio bilingüe (ES/EN) de Alejandro Vargas, Ingeniero en Sistemas.
+Bilingual (ES/EN) CV and portfolio of Alejandro Vargas, Computer Systems Engineer.
 
-**Sitio:** https://aledev-hsd0hhbzf6cvhrax.eastus2-01.azurewebsites.net/
+**Live site:** https://aledev-hsd0hhbzf6cvhrax.eastus2-01.azurewebsites.net/
 
-- Next.js 16 (App Router) como **export estático**, React 19, TypeScript 6 (strict) y Tailwind CSS 4.
-- Casi sin dependencias: iconos SVG propios, i18n propio y una sola librería, [Motion](https://motion.dev), para las animaciones que necesitan física, layout o gestos. El resto del movimiento es CSS y View Transitions nativas.
-- Tema oscuro por defecto con alternancia a claro. La preferencia se guarda y respeta `prefers-color-scheme`.
-- Proyectos en una galería compacta (`components/projects/project-gallery.tsx`): filtros por estado con una pastilla que se desliza y tarjetas que se recolocan, y el detalle completo en un `<dialog>` al que la tarjeta "crece" llevándose su imagen y su título; anterior/siguiente con botones, con ← → o deslizando en táctil, y cierre con Esc o clic fuera. En móvil, las tarjetas son un carrusel deslizable. Todo el texto de cada proyecto sigue en el HTML estático.
-- Movimiento con un sistema propio (ver [Movimiento](#movimiento)): entrada coreografiada del hero, reveals de scroll que ocurren una sola vez, línea de trayectoria que se dibuja al leer, indicador de sección activa, barra de progreso y micro-interacciones. Solo se animan `transform` y `opacity`, el contenido es visible sin JavaScript y se respeta `prefers-reduced-motion`.
-- SEO: metadatos por idioma con `hreflang`, imagen Open Graph generada con `next/og`, JSON-LD `Person`, `sitemap.xml` y `robots.txt`.
+![Home page of the site in English, dark theme](docs/screenshot.png)
 
-## Comandos
+## Stack
 
-| Comando | Qué hace |
+- Next.js 16 (App Router) as a **static export**, React 19, TypeScript 6 (strict) and Tailwind CSS 4.
+- A single library on top of that, [Motion](https://motion.dev), for the animations that need physics, layout or gestures. The rest of the motion is CSS and native View Transitions.
+- Own SVG icons and own i18n, with no extra packages.
+- GitHub Actions for CI/CD and Azure App Service (Windows, IIS) for hosting.
+
+## Run it locally
+
+Requirements: Node.js 20.9 or newer (24 recommended).
+
+```bash
+npm ci
+npm run dev
+```
+
+The development server runs at http://localhost:3000 and redirects to `/es/`.
+
+| Command | What it does |
 | --- | --- |
-| `npm run dev` | Servidor de desarrollo en http://localhost:3000 (redirige a `/es/`). |
-| `npm run build` | Genera el sitio estático en `out/`. |
-| `npm run preview` | Sirve `out/` como lo haría IIS, en http://localhost:4173. |
+| `npm run dev` | Development server at http://localhost:3000. |
+| `npm run build` | Generates the static site in `out/`. |
+| `npm run preview` | Serves `out/` the way IIS would, at http://localhost:4173. |
 | `npm run lint` | ESLint. |
-| `npm run typecheck` | Comprobación de tipos de TypeScript. |
-| `npm run cv:pdf` | Hace el build y regenera `public/cv/*.pdf` desde los datos del CV. |
+| `npm run typecheck` | TypeScript type check. |
+| `npm run cv:pdf` | Builds the site and regenerates `public/cv/*.pdf` from the CV data. Needs Node 22.18 or newer and Microsoft Edge or Google Chrome. |
 
-En `npm run dev` están ocultos el botón y los avisos ("Issues") de Next.js: `devIndicators: false` en `next.config.ts` y `<HideDevOverlay />` en `src/app/[lang]/layout.tsx`. Los errores siguen apareciendo en la terminal. Para verlos también en el navegador, quita `<HideDevOverlay />`.
+In `npm run dev` the Next.js button and its "Issues" notices are hidden (`devIndicators: false` in `next.config.ts` and `<HideDevOverlay />` in `src/app/[lang]/layout.tsx`). Errors still show in the terminal; remove `<HideDevOverlay />` to see them in the browser too.
 
-Requisitos: Node.js 20.9 o superior (se recomienda 24). `npm run cv:pdf` requiere Node 22.18 o superior y Microsoft Edge o Google Chrome instalado.
+## Technical decisions
 
-## Estructura
+### Static export instead of a Node server
+
+The App Service that hosts the site is **Windows** (IIS).
+
+- On Windows, Node runs behind iisnode, which passes the port as a named pipe. The `server.js` of `output: "standalone"` expects a numeric port, so it would need a custom server.
+- The site needs no server, so it is exported to static HTML and IIS serves it directly: no cold starts and no Node version to maintain on Azure.
+- `public/web.config` does the work the server would do:
+  - redirects `/` to `/es/` and serves the 404 page;
+  - declares the MIME types (`.woff2`, `.webp`, `.avif`);
+  - applies a one-year cache to `/_next/static` and revalidation to the HTML;
+  - adds security headers and removes `X-Powered-By`.
+
+### All the content in one typed file
+
+The whole CV lives in `src/data/cv.ts`, and the components never hold content.
+
+- Every translatable text is an `{ es: "…", en: "…" }` object, so both languages are edited side by side.
+- The downloadable PDFs come from the same data: `npm run cv:pdf` builds the site and prints `/es/cv/` and `/en/cv/` with headless Edge or Chrome.
+- The project gallery imports the project data directly, so the texts are not duplicated in the HTML.
+
+### Almost no dependencies
+
+- The icons are the site's own SVGs and the i18n is its own module, with no packages behind them.
+- Motion is loaded with `LazyMotion`: the `m` components travel in the initial bundle and the engine (`domMax`) arrives in a deferred chunk when the browser is idle.
+- What only follows the cursor or the scroll (progress bar, trajectory line, hero spotlight, magnetic buttons) is also loaded lazily (`components/motion/deferred.tsx`).
+
+### Motion from a single set of tokens
+
+All the motion comes from `src/lib/motion.ts`: curves, durations (150 ms micro, 300 ms interface, 600 ms entrances), distances, staggers and springs. Motion imports them as they are and CSS receives them as `--m-*` variables (generated by `lib/motion-css.ts` and injected by the layout), so changing a value there changes it across the site. On mobile those variables step down, and with reduced motion the distances are zero.
+
+- **Only `transform` and `opacity` are animated**, the content is visible without JavaScript and `prefers-reduced-motion` is respected.
+- **Primitives** (`src/components/motion/`): `<Reveal>` (appears when it enters the screen), `<Stagger>` (its children enter one after another), `<TextReveal>` (by words or by lines, with a mask) and `<Magnetic>` (follows the cursor slightly). They only mark the HTML, so they work the same in server components.
+- **Scroll reveals:** the HTML arrives with everything visible. `RevealRuntime` hides only what is still below the fold and reveals it once, with a single `IntersectionObserver`. Without JavaScript, or if hydration fails, nothing stays hidden.
+- **Hero:** its entrance is pure CSS, so it does not depend on hydration or delay the content.
+- **Project detail:** a shared element transition with View Transitions, and a fade where they are not supported.
+
+To try reduced motion in Chrome or Edge: DevTools → ⋮ → *More tools* → *Rendering* → *Emulate CSS media feature prefers-reduced-motion* → `reduce`. There should be no movement, only short fades.
+
+### A project gallery that keeps its text in the HTML
+
+The projects live in a compact gallery (`components/projects/project-gallery.tsx`).
+
+- Status filters with a sliding pill, and cards that reflow.
+- The full detail opens in a `<dialog>` that the card "grows" into, carrying its image and title.
+- Previous and next with buttons, with ← →, or by swiping on touch; Esc or a click outside closes it.
+- On mobile the cards are a swipeable carousel.
+- All the text of every project stays in the static HTML.
+
+### Theme and SEO
+
+- Dark theme by default with a switch to light. The preference is saved and `prefers-color-scheme` is respected.
+- Per-language metadata with `hreflang`, an Open Graph image built with `next/og`, JSON-LD `Person`, `sitemap.xml` and `robots.txt`.
+
+## Project structure
 
 ```
-.github/workflows/deploy.yml   CI/CD: lint, build y despliegue al App Service
+.github/workflows/deploy.yml   CI/CD: lint, build and deploy to the App Service
 public/
-  cv/                          PDF del CV en ES y EN (npm run cv:pdf)
-  projects/                    Imágenes de los proyectos (placeholders SVG por ahora)
-  web.config                   Reglas de IIS: redirección, 404, caché, MIME y cabeceras
-scripts/                       Generador de PDF y servidor local del export
+  cv/                          CV as PDF in ES and EN (npm run cv:pdf)
+  projects/                    Project images (SVG placeholders for now)
+  web.config                   IIS rules: redirect, 404, cache, MIME types and headers
+scripts/                       PDF generator and local server for the export
 src/
   app/
-    (root)/                    "/" → redirige a /es/
-    [lang]/                    Página por idioma: layout, page, cv/ (versión imprimible), og.png/
-    global-not-found.tsx       404 bilingüe
+    (root)/                    "/" → redirects to /es/
+    [lang]/                    Page per language: layout, page, cv/ (printable version), og.png/
+    global-not-found.tsx       Bilingual 404
     sitemap.ts, robots.ts      SEO
     icon.svg, favicon.ico, apple-icon.png
-    globals.css                Tokens de color, tipografía y animaciones
-  assets/fonts/                Geist en TTF para la imagen Open Graph
-  components/                  layout/ (navbar, tema, idioma), sections/ (una por sección), ui/,
-                               motion/ (primitivas y piezas de movimiento), projects/ (galería)
+    globals.css                Color tokens, typography and animations
+  assets/fonts/                Geist as TTF for the Open Graph image
+  components/                  layout/ (navbar, theme, language), sections/ (one per section), ui/,
+                               motion/ (motion primitives and pieces), projects/ (gallery)
   data/
-    cv.ts                      ← Todo el contenido del CV (ES y EN)
-    ui.ts                      Textos de la interfaz
-    types.ts                   Tipos del contenido
-  lib/                         i18n, tema, JSON-LD, imagen OG, utilidades y tokens de movimiento (motion.ts)
+    cv.ts                      ← All the CV content (ES and EN)
+    ui.ts                      Interface texts
+    types.ts                   Content types
+  lib/                         i18n, theme, JSON-LD, OG image, utilities and motion tokens (motion.ts)
 ```
 
-## Cómo editar el contenido
+## Editing the content
 
-Todo el CV está en **`src/data/cv.ts`**. No hace falta tocar los componentes.
+Everything is in **`src/data/cv.ts`**; the components do not need to be touched.
 
-- Cada texto traducible es un objeto `{ es: "…", en: "…" }`.
-- El orden de los arreglos es el orden en pantalla (experiencia, proyectos…). Las publicaciones se ordenan solas por año, de la más reciente a la más antigua; a igual año se respeta el orden del archivo.
-- Los proyectos están en la constante `projects`, al principio del archivo (la galería la importa directamente para no duplicar sus textos en el HTML). Se editan igual que el resto.
-- **Badge "Disponible para nuevas oportunidades":** `profile.availableForWork: true | false`.
-- **Foto:** guarda un JPG cuadrado de al menos 400 × 400 px en `public/images/profile.jpg`. Aparece sola en el hero y en el JSON-LD. Si no hay foto, se muestra el monograma.
-- **Capturas de proyectos:** exporta cada captura en WebP de unos 1600 × 1000 px (16:10), ya optimizada, porque el sitio no tiene optimizador de imágenes. Luego:
-  1. Guárdala en `public/projects/`, con un nombre nuevo si reemplaza a otra, por la caché.
-  2. Cambia `image` en el proyecto.
-  3. Describe la captura en `imageAlt`.
-- **Estados de proyecto:** `production`, `active`, `delivered`, `pilot` o `development`. Sin `status`, no se muestra el badge. Con `ongoing: true`, el año se muestra como "2025 — Presente".
-- **Publicaciones:** `status` es `published` o `pending`. El botón de DOI aparece solo si hay `doi` (o `url`), y el resumen solo si hay `abstract`.
-- **Textos de la interfaz** (menú, botones, títulos de sección): `src/data/ui.ts`.
-- **URL del sitio** (dominio propio en el futuro): `src/lib/site.ts`, o la variable `NEXT_PUBLIC_SITE_URL` al hacer el build.
+- The order of the arrays is the order on screen (experience, projects…). Publications sort themselves by year, newest first; within the same year the order of the file is kept.
+- **"Open to new opportunities" badge:** `profile.availableForWork: true | false`.
+- **Photo:** a square JPG of at least 400 × 400 px in `public/images/profile.jpg`. Without a photo, the monogram is shown.
+- **Project screenshots:** export each one as WebP at about 1600 × 1000 px (16:10), already optimized, because the site has no image optimizer. Save it in `public/projects/` under a new name if it replaces another (because of the cache), then update `image` and describe it in `imageAlt`.
+- **Project status:** `production`, `active`, `delivered`, `pilot` or `development`. Without `status` no badge is shown. With `ongoing: true` the year reads "2025 — Present".
+- **Publications:** `status` is `published` or `pending`. The DOI button appears only with a `doi` (or `url`), and the abstract only with an `abstract`.
+- **Interface texts** (menu, buttons, section titles): `src/data/ui.ts`.
+- **Site URL** (for a custom domain later): `src/lib/site.ts`, or the `NEXT_PUBLIC_SITE_URL` variable at build time.
 
-Busca `TODO` en `src/data/cv.ts` para ver los datos pendientes.
+After changing the content, run `npm run cv:pdf` and commit `public/cv/` so the PDFs match the site.
 
-## Movimiento
+## Deployment
 
-Todo el movimiento sale de un único juego de tokens, **`src/lib/motion.ts`**: curvas, duraciones (150 ms micro, 300 ms interfaz, 600 ms entradas), distancias, escalonados y springs. Motion los importa tal cual y CSS los recibe como variables `--m-*` (las genera `lib/motion-css.ts` y las inyecta el layout), así que cambiar un valor ahí lo cambia en todo el sitio. En móvil esas variables bajan un peldaño y con "reducir movimiento" las distancias valen cero.
+Every push to `main` runs [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
 
-- **Primitivas** (`src/components/motion/`): `<Reveal>` (aparece al entrar en pantalla), `<Stagger>` (sus hijos entran uno tras otro), `<TextReveal>` (por palabras o por líneas, con máscara) y `<Magnetic>` (sigue levemente al cursor). Solo marcan el HTML, así que se usan igual en componentes de servidor.
-- **Reveals de scroll**: el HTML llega con todo visible. `RevealRuntime` oculta únicamente lo que aún está bajo el pliegue y lo revela una sola vez con un único `IntersectionObserver`. Sin JavaScript, o si la hidratación falla, no queda nada oculto.
-- **Motion** se carga con `LazyMotion`: los componentes `m` viajan en el bundle inicial y el motor (`domMax`) llega en un chunk diferido cuando el navegador está libre. Lo que solo sigue al cursor o al scroll (barra de progreso, línea de trayectoria, spotlight del hero, botones magnéticos) también se carga en diferido (`components/motion/deferred.tsx`).
-- **Hero**: su entrada es CSS puro, para no depender de la hidratación ni retrasar el contenido.
-- **Detalle de proyecto**: transición de elemento compartido con View Transitions; sin soporte, un fundido.
+1. `npm ci`, `npm run lint` and `npm run build`.
+2. Packages `out/` as a zip.
+3. Publishes it to the `aledev` App Service with `azure/webapps-deploy`, authenticated with the publish profile stored in the `AZURE_WEBAPP_PUBLISH_PROFILE` secret.
+4. `clean: true` empties `wwwroot` before publishing, so no files of the previous site remain.
 
-Para probar el modo de movimiento reducido: en Chrome o Edge, DevTools → menú ⋮ → *More tools* → *Rendering* → *Emulate CSS media feature prefers-reduced-motion* → `reduce` (o en Windows, *Configuración* → *Accesibilidad* → *Efectos visuales* → desactivar *Efectos de animación*). No debe haber desplazamientos, solo fundidos cortos.
+Pull requests only run lint and build.
 
-### PDF del CV
+### First-time setup
 
-El botón "Descargar CV" apunta a `public/cv/Alejandro-Vargas-CV.pdf` (ES) y `public/cv/Alejandro-Vargas-CV-EN.pdf` (EN).
-
-- Esos PDF se generan desde `cv.ts` con `npm run cv:pdf`: el script hace el build e imprime `/es/cv/` y `/en/cv/` con Edge o Chrome headless.
-- Después de cambiar el contenido, vuelve a generarlos y haz commit de `public/cv/`.
-- Si prefieres tu CV diseñado, reemplaza los archivos manteniendo los nombres. **No publiques** versiones con tu teléfono ni con datos de tus referencias.
-
-## Despliegue
-
-Cada push a `main` ejecuta [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml):
-
-1. `npm ci`, `npm run lint` y `npm run build`.
-2. Empaqueta `out/` en un zip.
-3. Lo publica en el App Service `aledev` con `azure/webapps-deploy`, autenticado con el publish profile guardado en el secreto `AZURE_WEBAPP_PUBLISH_PROFILE`.
-4. `clean: true` borra `wwwroot` antes de publicar, así que no quedan archivos del sitio anterior.
-
-Los pull requests solo hacen lint y build.
-
-### Por qué export estático y no `standalone`
-
-El App Service existente es **Windows** (IIS).
-
-- En Windows, Node corre detrás de iisnode, que le pasa el puerto como un named pipe. El `server.js` de `output: "standalone"` espera un puerto numérico, así que haría falta un servidor a medida.
-- Como el sitio no necesita servidor, se exporta a HTML estático e IIS lo sirve directamente: sin arranques en frío ni versión de Node que mantener en Azure.
-- `public/web.config` hace el trabajo que haría el servidor:
-  - redirige `/` a `/es/` y sirve la página 404;
-  - declara los tipos MIME (`.woff2`, `.webp`, `.avif`);
-  - aplica una caché de un año a `/_next/static` y revalidación al HTML;
-  - agrega cabeceras de seguridad y quita `X-Powered-By`.
-
-### Configuración inicial (una sola vez)
-
-1. **Descarga el publish profile.** En el [portal de Azure](https://portal.azure.com), abre *App Services* → `aledev` → *Información general* → **Descargar perfil de publicación**. Si el botón está deshabilitado:
-   1. Ve a *Configuración* → *Configuración general*.
-   2. Activa **Credenciales de publicación de autenticación básica de SCM**.
-   3. Guarda y vuelve a intentarlo.
-2. **Crea el secreto en GitHub.** En el repositorio, ve a *Settings* → *Secrets and variables* → *Actions* → **New repository secret**. Usa el nombre `AZURE_WEBAPP_PUBLISH_PROFILE` y pega como valor el contenido completo del archivo `.PublishSettings`. También puedes hacerlo por consola:
+1. **Download the publish profile.** In the [Azure portal](https://portal.azure.com), open *App Services* → `aledev` → *Overview* → **Download publish profile**. If the button is disabled, go to *Settings* → *Configuration* → *General settings*, turn on **SCM Basic Auth Publishing Credentials**, save and try again.
+2. **Create the secret on GitHub.** In the repository, go to *Settings* → *Secrets and variables* → *Actions* → **New repository secret**. Name it `AZURE_WEBAPP_PUBLISH_PROFILE` and paste the full content of the `.PublishSettings` file. From the command line:
    ```bash
-   gh secret set AZURE_WEBAPP_PUBLISH_PROFILE < ruta/al/aledev.PublishSettings
+   gh secret set AZURE_WEBAPP_PUBLISH_PROFILE < path/to/aledev.PublishSettings
    ```
-   Después borra el archivo descargado: contiene credenciales. El `.gitignore` ya lo excluye.
-3. **Ajustes recomendados del App Service** (*Configuración*):
-   - **Solo HTTPS:** activado.
-   - **Afinidad de ARR:** desactivada. Quita una cookie innecesaria en un sitio estático.
-   - **Comando de inicio:** no hace falta. IIS sirve los archivos estáticos y la versión de Node del App Service ya no se usa.
-4. **Publica.** Haz push a `main`, o en *Actions* → *Build and deploy* → **Run workflow**.
+   Delete the downloaded file afterwards: it contains credentials. The `.gitignore` already excludes it.
+3. **Recommended App Service settings** (*Configuration*): HTTPS only on; ARR affinity off (it removes a cookie a static site does not need); no startup command (IIS serves the static files, and the App Service's Node version is no longer used).
+4. **Publish.** Push to `main`, or run *Actions* → *Build and deploy* → **Run workflow**.
 
-## Licencias
+## Licenses
 
-La fuente Geist (Vercel) se distribuye bajo la SIL Open Font License 1.1; ver [`src/assets/fonts/OFL.txt`](src/assets/fonts/OFL.txt).
+The Geist font (Vercel) is distributed under the SIL Open Font License 1.1; see [`src/assets/fonts/OFL.txt`](src/assets/fonts/OFL.txt).
