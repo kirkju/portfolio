@@ -1,5 +1,6 @@
 import { CopyEmailButton } from "@/components/copy-email-button";
 import { ExternalLinkIcon, GitHubIcon, LinkedInIcon, MailIcon, MapPinIcon } from "@/components/icons";
+import { Reveal, Stagger } from "@/components/motion/reveal";
 import { ButtonLink } from "@/components/ui/button-link";
 import { Section } from "@/components/ui/section";
 import { cv } from "@/data/cv";
@@ -18,7 +19,7 @@ export function Contact({ locale }: { locale: Locale }) {
   return (
     <Section id={t.sectionIds.contact} index="07" title={t.contact.title} lead={t.contact.lead}>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-        <div className="spotlight reveal relative isolate overflow-hidden rounded-3xl border border-border bg-surface p-7 shadow-card sm:p-10">
+        <Reveal className="spotlight relative isolate overflow-hidden rounded-3xl border border-border bg-surface p-7 shadow-card sm:p-10">
           <div
             aria-hidden="true"
             className="absolute -top-24 -right-24 -z-10 size-80 bg-[radial-gradient(closest-side,var(--glow),transparent)]"
@@ -26,7 +27,7 @@ export function Contact({ locale }: { locale: Locale }) {
           <p className="font-mono text-xs tracking-[0.2em] text-muted uppercase">{t.contact.email}</p>
           <a
             href={`mailto:${email}`}
-            className="mt-3 block rounded-md text-2xl font-semibold tracking-tight break-all text-heading transition-colors hover:text-accent sm:text-4xl"
+            className="mt-3 block rounded-md text-2xl font-semibold tracking-tight break-all text-heading transition-colors duration-micro hover:text-accent sm:text-4xl"
           >
             {email}
           </a>
@@ -45,18 +46,19 @@ export function Contact({ locale }: { locale: Locale }) {
               }}
             />
           </div>
-        </div>
+        </Reveal>
 
-        <ul className="grid gap-4">
+        {/* Los perfiles entran uno tras otro. */}
+        <Stagger as="ul" className="grid gap-4">
           {profiles.map(({ href, name, hint, Icon }) => (
-            <li key={name} className="reveal">
+            <li key={name}>
               <a
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="spotlight group flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card transition duration-300 ease-smooth hover:border-accent/50 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0"
+                className="spotlight group flex h-full items-center gap-4 rounded-2xl border border-border bg-surface p-5 shadow-card transition duration-ui ease-smooth hover:border-accent/50 hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.99]"
               >
-                <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-fg transition duration-300 ease-smooth group-hover:border-accent/40 group-hover:text-accent motion-safe:group-hover:scale-105">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-fg transition duration-ui ease-smooth group-hover:border-accent/40 group-hover:text-accent motion-safe:group-hover:scale-105 motion-safe:group-hover:-rotate-3">
                   <Icon className="size-5" />
                 </span>
                 <span className="min-w-0">
@@ -68,7 +70,7 @@ export function Contact({ locale }: { locale: Locale }) {
               </a>
             </li>
           ))}
-          <li className="reveal flex items-center gap-4 rounded-2xl border border-dashed border-border p-5">
+          <li className="flex items-center gap-4 rounded-2xl border border-dashed border-border p-5">
             <span className="grid size-11 shrink-0 place-items-center rounded-xl border border-border bg-surface-2 text-accent">
               <MapPinIcon className="size-5" />
             </span>
@@ -77,7 +79,7 @@ export function Contact({ locale }: { locale: Locale }) {
               <span className="block text-sm text-muted">{cv.references[locale]}</span>
             </span>
           </li>
-        </ul>
+        </Stagger>
       </div>
     </Section>
   );

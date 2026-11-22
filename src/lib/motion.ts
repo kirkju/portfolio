@@ -81,6 +81,9 @@ export const timeline = { readingLine: 0.7 } as const;
 /** Botones magnéticos: cuánto siguen al cursor y hasta dónde, en px. */
 export const magnetic = { strength: 0.3, max: distance.sm / 2 } as const;
 
+/** Mensajes de confirmación ("Copiado"): segundos que permanecen antes de volver. */
+export const feedback = { hold: 2.5 } as const;
+
 /** Gesto de deslizar en el detalle de proyecto (táctil). */
 export const swipe = {
   /** Desplazamiento (px) o velocidad (px/s) a partir de los que se cambia de proyecto. */

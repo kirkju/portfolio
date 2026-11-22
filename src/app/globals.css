@@ -174,18 +174,7 @@
   background-size: 3rem 3rem;
 }
 
-/* ---------- Animaciones (solo si el usuario no pidió reducir el movimiento) ---------- */
-/* Solo desplazamiento, sin opacidad: el texto que entra por el borde de la pantalla
-   nunca queda semitransparente (mantiene el contraste AA en todo momento). */
-@keyframes reveal {
-  from {
-    translate: 0 2rem;
-  }
-  to {
-    translate: 0 0;
-  }
-}
-
+/* ---------- Animaciones compartidas ---------- */
 @keyframes vt-fade-out {
   to {
     opacity: 0;
@@ -211,15 +200,6 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Aparición al hacer scroll: mejora progresiva, sin JavaScript. */
-  @supports (animation-timeline: view()) {
-    .reveal {
-      animation: reveal var(--ease) both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 12rem;
-    }
-  }
-
   .ping-soft {
     animation: ping-soft var(--m-loop-pulse) var(--m-ease-out) infinite;
   }
@@ -941,10 +921,11 @@ html[data-vt] .project-dialog .dialog-panel {
   vertical-align: bottom;
 }
 
-/* ---------- Títulos que suben palabra por palabra ---------- */
+/* ---------- Palabras con máscara (SplitWords) ----------
+   Cada palabra vive dentro de una caja que la recorta: desde ahí sube el nombre del hero
+   y los títulos de sección. El pequeño relleno inferior deja sitio a las letras con rabo. */
 .word-mask {
   display: inline-block;
-  /* `clip` y no `hidden`: así no es un contenedor de scroll y no rompe view(). */
   overflow: clip;
   padding-bottom: 0.12em;
   margin-bottom: -0.12em;
@@ -1130,7 +1111,6 @@ html[data-vt] .project-dialog .dialog-panel {
     print-color-adjust: exact;
   }
 
-  .reveal,
   .intro,
   .intro-photo,
   .intro-photo img,
