@@ -43,6 +43,17 @@ export const spring = {
   scroll: { stiffness: 120, damping: 24, mass: 0.35, restDelta: 0.0005 },
 } as const;
 
+/** Bucles de ambiente, en segundos: lentos y continuos, nunca protagonistas. */
+export const loop = {
+  /** Punto que late (insignia "Disponible", nodo actual de la trayectoria). */
+  pulse: 2.2,
+  /** Vuelta completa del anillo de la foto. */
+  ring: 14,
+  /** Deriva de los dos resplandores del hero. */
+  auroraA: 18,
+  auroraB: 22,
+} as const;
+
 /** Desde este ancho (el `md` de Tailwind) se usa la versión completa; por debajo, la ligera. */
 export const fullMotionQuery = "(min-width: 48rem)";
 

@@ -9,8 +9,14 @@ import { useMotionReady } from "./motion-provider";
  * cuando el navegador ya terminó de pintar e hidratar.
  */
 
+const HeroSpotlightImpl = dynamic(() => import("./hero-spotlight"), { ssr: false });
 const MagneticFieldImpl = dynamic(() => import("./magnetic-field"), { ssr: false });
 const ScrollProgressImpl = dynamic(() => import("./scroll-progress"), { ssr: false });
+
+/** Luz que sigue al cursor sobre la cuadrícula del hero. */
+export function HeroSpotlight() {
+  return useMotionReady() ? <HeroSpotlightImpl /> : null;
+}
 
 /** Activa todos los `<Magnetic>` de la página. */
 export function MagneticField() {

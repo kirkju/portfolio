@@ -4,7 +4,7 @@
  * en el HTML, así CSS y Motion leen exactamente los mismos valores.
  */
 import { spring as springGenerator } from "motion";
-import { distance, duration, ease, fullMotionQuery, spring, stagger } from "@/lib/motion";
+import { distance, duration, ease, fullMotionQuery, loop, spring, stagger } from "@/lib/motion";
 
 const bezier = (curve: readonly number[]) => `cubic-bezier(${curve.join(", ")})`;
 const ms = (seconds: number) => `${Math.round(seconds * 1000)}ms`;
@@ -41,6 +41,10 @@ const base = declarations({
   "stagger-fast": ms(stagger.fast),
   stagger: ms(stagger.base),
   "stagger-slow": ms(stagger.slow),
+  "loop-pulse": ms(loop.pulse),
+  "loop-ring": ms(loop.ring),
+  "loop-aurora-a": ms(loop.auroraA),
+  "loop-aurora-b": ms(loop.auroraB),
 });
 
 // Móvil: versión ligera. Cada distancia y cada escalonado bajan un peldaño.

@@ -19,7 +19,7 @@ const sizes: Record<Size, string> = {
 export function buttonClasses(variant: Variant = "primary", size: Size = "md", className?: string) {
   return cn(
     // Al pasar el cursor se eleva un poco; al pulsar se hunde, como un botón físico.
-    "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition duration-200 ease-smooth motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.97]",
+    "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-medium whitespace-nowrap transition duration-micro ease-smooth motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.97]",
     variants[variant],
     sizes[size],
     className,

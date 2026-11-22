@@ -23,6 +23,7 @@
   --glow: rgb(24 72 150 / 0.55);
   --glow-accent: rgb(34 211 238 / 0.1);
   --grid: rgb(148 163 184 / 0.07);
+  --grid-strong: rgb(34 211 238 / 0.2);
   --card-shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 24px 48px -32px rgb(0 0 0 / 0.8);
   --card-shadow-hover: 0 1px 0 rgb(255 255 255 / 0.06) inset, 0 32px 64px -30px rgb(0 0 0 / 0.95);
   --accent-glow: 0 10px 28px -12px rgb(34 211 238 / 0.55);
@@ -47,6 +48,7 @@
   --glow: rgb(11 42 94 / 0.12);
   --glow-accent: rgb(14 116 144 / 0.08);
   --grid: rgb(11 42 94 / 0.06);
+  --grid-strong: rgb(14 116 144 / 0.22);
   --card-shadow: 0 1px 2px rgb(11 27 51 / 0.05), 0 20px 40px -28px rgb(11 27 51 / 0.25);
   --card-shadow-hover: 0 1px 2px rgb(11 27 51 / 0.06), 0 28px 56px -28px rgb(11 27 51 / 0.36);
   --accent-glow: 0 10px 26px -12px rgb(14 116 144 / 0.5);
@@ -189,19 +191,6 @@
   }
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    translate: 0 0.75rem;
-    filter: blur(4px);
-  }
-  to {
-    opacity: 1;
-    translate: 0 0;
-    filter: none;
-  }
-}
-
 @keyframes draw-y {
   from {
     scale: 1 0;
@@ -236,12 +225,6 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* Entrada del hero al cargar. */
-  .rise {
-    animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
-    animation-delay: var(--delay, 0ms);
-  }
-
   /* Aparición al hacer scroll: mejora progresiva, sin JavaScript. */
   @supports (animation-timeline: view()) {
     .reveal {
@@ -261,7 +244,7 @@
   }
 
   .ping-soft {
-    animation: ping-soft 2.2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    animation: ping-soft var(--m-loop-pulse) var(--m-ease-out) infinite;
   }
 
   /* Abrir y cerrar <details> (resúmenes) con altura animada donde se puede. */
@@ -558,6 +541,134 @@ html[data-scrolled] .mobile-panel {
   view-transition-name: lang-active;
 }
 
+/* ---------- Hero ----------
+   Entrada al cargar, en CSS puro: no espera a JavaScript ni a la hidratación, así que no
+   retrasa el contenido. Cada elemento lleva su turno en `--turn` (lo decide hero.tsx) y
+   el retraso es turno × escalonado. Los fotogramas finales son implícitos (el estilo
+   normal del elemento), así que al terminar no queda nada distinto de como estaba.
+   Al llegar desde el cambio de idioma (`data-intro="skip"`) la entrada no se repite. */
+@keyframes intro-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--m-shift), 0);
+  }
+}
+
+@keyframes intro-word {
+  from {
+    transform: translate3d(0, 110%, 0);
+  }
+}
+
+/* La foto se descubre desde el centro. El círculo final (100 %) queda muy por fuera de
+   la caja y de su sombra, así que al terminar ya no recorta nada. */
+@keyframes intro-photo {
+  from {
+    opacity: 0;
+    clip-path: circle(16% at 50% 50%);
+    transform: scale(0.94);
+  }
+  25% {
+    opacity: 1;
+  }
+  to {
+    clip-path: circle(100% at 50% 50%);
+  }
+}
+
+@keyframes intro-zoom {
+  from {
+    transform: scale(1.18);
+  }
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+.intro {
+  animation: intro-rise var(--m-dur-enter) var(--m-ease-out) both;
+  animation-delay: calc(var(--turn, 0) * var(--m-stagger-slow));
+}
+
+.hero-name .word {
+  animation: intro-word var(--m-dur-enter) var(--m-ease-out) both;
+  animation-delay: calc((var(--turn, 0) + var(--i, 0)) * var(--m-stagger-slow));
+}
+
+/* Empieza pronto y dura casi el doble: es lo último en asentarse. */
+.intro-photo {
+  --photo-dur: calc(var(--m-dur-enter) * 1.75);
+  animation: intro-photo var(--photo-dur) var(--m-ease-out) both;
+  animation-delay: calc(var(--turn, 0) * var(--m-stagger-slow));
+}
+
+.intro-photo img {
+  animation: intro-zoom var(--photo-dur) var(--m-ease-out) both;
+  animation-delay: calc(var(--turn, 0) * var(--m-stagger-slow));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Sin máscaras, recortes ni zoom: un fundido corto y a la vez (los tokens ya valen 0). */
+  .hero-name .word,
+  .intro-photo img {
+    animation: none;
+  }
+
+  .hero-name,
+  .intro-photo {
+    animation: intro-fade var(--m-dur-enter) var(--m-ease-out) both;
+  }
+}
+
+html[data-intro="skip"] :is(.intro, .intro-photo, .intro-photo img, .hero-name, .hero-name .word) {
+  animation: none;
+}
+
+/* Luz que sigue al cursor (components/motion/hero-spotlight.tsx): un resplandor y una
+   lente que deja ver una cuadrícula más viva, alineada con la del fondo. */
+.hero-glow,
+.hero-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.hero-glow {
+  --size: 40rem;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  background: radial-gradient(closest-side, var(--glow-accent), transparent);
+}
+
+.hero-lens {
+  --size: 26rem;
+  width: var(--size);
+  height: var(--size);
+  margin: calc(var(--size) / -2) 0 0 calc(var(--size) / -2);
+  overflow: hidden;
+  mask-image: radial-gradient(closest-side, #000, transparent);
+}
+
+.hero-lens-grid {
+  position: absolute;
+  /* Deshace el margen de la lente: el origen coincide con el de la sección. */
+  top: calc(var(--size) / 2);
+  left: calc(var(--size) / 2);
+  width: 100vw;
+  height: 100rem;
+  background-image:
+    linear-gradient(to right, var(--grid-strong) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-strong) 1px, transparent 1px);
+  background-size: 3rem 3rem;
+  will-change: transform;
+}
+
 /* ---------- Galería de proyectos ----------
    Filtros que reacomodan las tarjetas, detalle en <dialog> con la imagen que
    "vuela" desde la tarjeta, y anterior/siguiente con deslizamiento. El estado de
@@ -802,19 +913,7 @@ html[data-vt] .project-dialog .dialog-panel {
   display: inline-block;
 }
 
-@keyframes word-up {
-  from {
-    translate: 0 110%;
-  }
-}
-
 @media (prefers-reduced-motion: no-preference) {
-  /* Hero: al cargar, una palabra tras otra. */
-  .hero-name .word {
-    animation: word-up 0.9s var(--ease) both;
-    animation-delay: var(--delay, 0ms);
-  }
-
   @supports (animation-timeline: view()) {
     /* Habilidades: los chips aparecen en cascada mientras entra su tarjeta. */
     .skill-card {
@@ -838,19 +937,19 @@ html[data-vt] .project-dialog .dialog-panel {
 
   /* Anillo de gradiente alrededor de la foto y aurora del fondo del hero. */
   .photo-ring::before {
-    animation: spin 14s linear infinite;
+    animation: spin var(--m-loop-ring) linear infinite;
   }
 
   .aurora-a {
-    animation: drift-a 18s ease-in-out infinite alternate;
+    animation: drift-a var(--m-loop-aurora-a) var(--m-ease-in-out) infinite alternate;
   }
 
   .aurora-b {
-    animation: drift-b 22s ease-in-out infinite alternate;
+    animation: drift-b var(--m-loop-aurora-b) var(--m-ease-in-out) infinite alternate;
   }
 
   .swipe-hint {
-    animation: swipe 1.6s var(--ease) 3;
+    animation: swipe var(--m-loop-pulse) var(--m-ease-out) 3;
   }
 }
 
@@ -1006,7 +1105,10 @@ html[data-vt] .project-dialog .dialog-panel {
   }
 
   .reveal,
-  .rise {
+  .intro,
+  .intro-photo,
+  .intro-photo img,
+  .hero-name .word {
     animation: none !important;
   }
 
