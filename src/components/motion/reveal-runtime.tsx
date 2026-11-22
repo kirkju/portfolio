@@ -107,9 +107,10 @@ function arm(root: HTMLElement, splitText: boolean): Cleanup {
 
 /**
  * Suelta un bloque armado: cada `data-reveal` que contiene empieza un paso después del
- * anterior (`--d`, en ms). Devuelve cuánto tarda en terminar y cómo limpiar lo que añadió.
+ * anterior (`--d`, en ms). Devuelve cuánto tarda en terminar, cuántas piezas tiene su
+ * secuencia y cómo limpiar lo que añadió.
  */
-function show(root: HTMLElement, baseMs: number, step: number): { total: number; undo: Cleanup } {
+function show(root: HTMLElement, baseMs: number, step: number): { total: number; pieces: number; undo: Cleanup } {
   const items = members(root);
   const undo: Cleanup[] = [];
   let cursor = baseMs;
@@ -142,7 +143,11 @@ function show(root: HTMLElement, baseMs: number, step: number): { total: number;
   if (undo.length > 0) void root.offsetWidth;
   items.forEach((el) => el.setAttribute("data-shown", ""));
 
-  return { total: end + toMs(duration.enter) + toMs(duration.ui), undo: () => undo.forEach((fn) => fn()) };
+  return {
+    total: end + toMs(duration.enter) + toMs(duration.ui),
+    pieces: items.length,
+    undo: () => undo.forEach((fn) => fn()),
+  };
 }
 
 function startReveals(): Cleanup {
@@ -184,7 +189,9 @@ function startReveals(): Cleanup {
 
   const observer = new IntersectionObserver(
     (entries) => {
-      let lane = 0;
+      // Bloques que entran a la vez se escalonan. Uno con secuencia propia (una cabecera
+      // de sección, por ejemplo) retrasa más al siguiente, para que se lea primero.
+      let wait = 0;
       const step = currentStep();
       const entering = entries.filter((entry) => entry.isIntersecting).sort((a, b) => inDocumentOrder(a.target, b.target));
       for (const entry of entering) {
@@ -192,8 +199,8 @@ function startReveals(): Cleanup {
         // Si el visitante saltó por encima (un ancla, "buscar en la página"), se muestra sin espera.
         const skipped = entry.boundingClientRect.bottom <= 0;
         for (const root of targets.get(entry.target) ?? []) {
-          const delay = skipped ? 0 : Math.min(lane++, reveal.maxLanes) * step;
-          const { total, undo } = show(root, delay, step);
+          const { total, pieces, undo } = show(root, skipped ? 0 : wait, step);
+          if (!skipped) wait = Math.min(wait + Math.min(pieces, reveal.maxSteps) * step, reveal.maxWait * step);
           pendingUndo.set(root, undo);
           const timer = window.setTimeout(() => {
             timers.delete(timer);

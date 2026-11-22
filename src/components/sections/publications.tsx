@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { ChevronDownIcon, ExternalLinkIcon } from "@/components/icons";
+import { Reveal, Stagger } from "@/components/motion/reveal";
 import { Section } from "@/components/ui/section";
 import { StatusBadge } from "@/components/ui/tag";
 import { cv } from "@/data/cv";
@@ -31,7 +32,8 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
   const href = p.doi ? `https://doi.org/${p.doi}` : p.url;
 
   return (
-    <article className="spotlight rounded-2xl border border-border bg-bg p-6 shadow-card transition duration-300 ease-smooth hover:border-accent/40 hover:shadow-card-hover sm:p-8">
+    // `nudge-host`: al pasar el cursor por la tarjeta, la flecha del enlace se adelanta.
+    <article className="nudge-host spotlight rounded-2xl border border-border bg-bg p-6 shadow-card transition duration-ui ease-smooth hover:border-accent/40 hover:shadow-card-hover sm:p-8">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
         <StatusBadge tone={p.status === "published" ? "success" : "warning"}>
           {t.publications.status[p.status]}
@@ -69,7 +71,7 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg shadow-card transition duration-200 ease-smooth hover:border-accent/60 hover:text-heading hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.98]"
+          className="mt-6 inline-flex max-w-full items-center gap-2.5 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg shadow-card transition duration-micro ease-smooth hover:border-accent/60 hover:text-heading hover:shadow-card-hover motion-safe:hover:-translate-y-0.5 motion-safe:active:translate-y-0 motion-safe:active:scale-[0.98]"
         >
           {p.doi ? (
             <>
@@ -86,11 +88,11 @@ function PublicationCard({ publication: p, locale }: { publication: Publication;
 
       {p.abstract ? (
         <details className="group mt-5 rounded-xl border border-border bg-surface/60">
-          <summary className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-medium text-fg transition-colors hover:text-accent">
+          <summary className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-medium text-fg transition-colors duration-micro hover:text-accent">
             {t.publications.abstract}
-            <ChevronDownIcon className="size-4 transition-transform duration-200 group-open:rotate-180" />
+            <ChevronDownIcon className="size-4 transition-transform duration-ui ease-smooth group-open:rotate-180" />
           </summary>
-          <div className="border-t border-border px-4 py-4 text-sm leading-relaxed text-muted">
+          <div className="details-body border-t border-border px-4 py-4 text-sm leading-relaxed text-muted">
             <p>{p.abstract[locale]}</p>
             {t.publications.abstractNote ? (
               <p className="mt-3 text-xs text-muted/90 italic">{t.publications.abstractNote}</p>
@@ -112,17 +114,20 @@ export function Publications({ locale }: { locale: Locale }) {
       lead={t.publications.lead}
       className="border-y border-border bg-surface/40"
     >
+      {/* Cada publicación entra al llegar a ella; las que llegan a la vez, una tras otra. */}
       <ol className="grid gap-5">
         {byYearDesc(cv.publications).map((publication) => (
-          <li key={publication.id} className="reveal">
+          <Reveal as="li" key={publication.id}>
             <PublicationCard publication={publication} locale={locale} />
-          </li>
+          </Reveal>
         ))}
       </ol>
 
-      <div className="reveal mt-14">
-        <h3 className="font-mono text-xs tracking-[0.2em] text-muted uppercase">{t.publications.researchAreas}</h3>
-        <ul className="mt-4 flex flex-wrap gap-2.5">
+      <Reveal kind="group" className="mt-14">
+        <Reveal as="h3" kind="fade" className="font-mono text-xs tracking-[0.2em] text-muted uppercase">
+          {t.publications.researchAreas}
+        </Reveal>
+        <Stagger as="ul" speed="fast" className="mt-4 flex flex-wrap gap-2.5">
           {cv.researchAreas.map((area) => (
             <li
               key={area.en}
@@ -131,8 +136,8 @@ export function Publications({ locale }: { locale: Locale }) {
               {area[locale]}
             </li>
           ))}
-        </ul>
-      </div>
+        </Stagger>
+      </Reveal>
     </Section>
   );
 }

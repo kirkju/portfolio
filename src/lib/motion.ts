@@ -61,8 +61,10 @@ export const fullMotionQuery = "(min-width: 48rem)";
 export const reveal = {
   /** Fracción inferior de la ventana que un bloque debe superar para revelarse. */
   margin: 0.12,
-  /** Bloques que entran a la vez se escalonan como mucho estos pasos. */
-  maxLanes: 4,
+  /** Entre bloques que entran a la vez, uno retrasa al siguiente como mucho estos pasos... */
+  maxSteps: 4,
+  /** ...y el último de la tanda nunca espera más de estos. */
+  maxWait: 8,
 } as const;
 
 /** Barra de navegación. */

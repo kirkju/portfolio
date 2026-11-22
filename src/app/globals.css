@@ -224,23 +224,10 @@
     animation: ping-soft var(--m-loop-pulse) var(--m-ease-out) infinite;
   }
 
-  /* Abrir y cerrar <details> (resúmenes) con altura animada donde se puede. */
-  @supports selector(::details-content) {
-    :root {
-      interpolate-size: allow-keywords;
-    }
-
-    details::details-content {
-      block-size: 0;
-      overflow-y: clip;
-      transition:
-        block-size 0.35s var(--ease),
-        content-visibility 0.35s allow-discrete;
-    }
-
-    details[open]::details-content {
-      block-size: auto;
-    }
+  /* Al abrir un <details> (resumen de una publicación) su contenido entra con un fundido
+     y un leve ascenso. La altura no se anima: solo transform y opacity. */
+  details[open] > .details-body {
+    animation: enter-rise var(--m-dur-ui) var(--m-ease-out) backwards;
   }
 
   /* Iconos que acompañan el gesto del enlace o botón que los contiene (`.nudge-host`
