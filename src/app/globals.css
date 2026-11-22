@@ -485,7 +485,7 @@ html[data-scrolled] .mobile-panel {
    Navegadores sin soporte navegan como siempre. */
 @media (prefers-reduced-motion: no-preference) {
   /* `types: page` separa la navegación de las transiciones dentro de la página
-     (tema, filtros, detalle de proyecto), que usan el fundido normal. */
+     (cambio de tema y detalle de proyecto), que tienen sus propias reglas. */
   @view-transition {
     navigation: auto;
     types: page;
