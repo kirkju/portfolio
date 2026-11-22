@@ -122,8 +122,8 @@ export const projects: readonly Project[] = [
       en: "Putting together a multichannel campaign took days of manual work — finding companies and contacts, verifying emails, removing duplicates, and adapting formats and messages — and each channel ended up working from a different list.",
     },
     solution: {
-      es: "Aplicación web que convierte un perfil de cliente ideal en campañas para cuatro canales —correo en frío, mensajes directos y anuncios en la red profesional, y anuncios en redes sociales— sobre una única audiencia: enriquece, verifica y segmenta los contactos, y usa un LLM (API de Claude) para redactar mensajes a medida, clasificar respuestas y proponer borradores. API en FastAPI sobre PostgreSQL con frontend en React; todo envío o lanzamiento lo confirma una persona.",
-      en: "A web app that turns an ideal customer profile into campaigns for four channels — cold email, direct messages and ads on the professional network, and social media ads — built on a single audience: it enriches, verifies, and segments contacts, and uses an LLM (Claude API) to write tailored messages, classify replies, and draft responses. A FastAPI API on PostgreSQL with a React frontend; every send or launch is confirmed by a person.",
+      es: "Aplicación web que convierte un perfil de cliente ideal en campañas para cuatro canales —correo en frío, mensajes directos y anuncios en la red profesional, y anuncios en redes sociales— sobre una única audiencia: enriquece, verifica y segmenta los contactos, y usa un LLM para redactar mensajes a medida, clasificar respuestas y proponer borradores. API en FastAPI sobre PostgreSQL con frontend en React; todo envío o lanzamiento lo confirma una persona.",
+      en: "A web app that turns an ideal customer profile into campaigns for four channels — cold email, direct messages and ads on the professional network, and social media ads — built on a single audience: it enriches, verifies, and segments contacts, and uses an LLM to write tailored messages, classify replies, and draft responses. A FastAPI API on PostgreSQL with a React frontend; every send or launch is confirmed by a person.",
     },
     result: {
       es: "En desarrollo: los módulos de datos, audiencias, correo, respuestas y panel de métricas están construidos y probados en un entorno de demostración con Docker y datos sintéticos.",
@@ -147,7 +147,7 @@ export const projects: readonly Project[] = [
         "Spending cap and cost logging",
       ],
     },
-    stack: ["Python", "FastAPI", "PostgreSQL", "React", "TypeScript", "Claude API", "Docker", "Playwright"],
+    stack: ["Python", "FastAPI", "PostgreSQL", "React", "TypeScript", "LLM API", "Docker", "Playwright"],
   },
   {
     // Une el sitio de ventas y la webapp de fletes (antes eran dos tarjetas); el ERP va aparte.
