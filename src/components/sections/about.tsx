@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { Reveal, Stagger } from "@/components/motion/reveal";
+import { TextReveal } from "@/components/motion/text-reveal";
 import { Section } from "@/components/ui/section";
 import { cv } from "@/data/cv";
 import { ui } from "@/data/ui";
@@ -22,14 +24,20 @@ export function About({ locale }: { locale: Locale }) {
   return (
     <Section id={t.sectionIds.about} index="01" title={t.about.title}>
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)] lg:gap-16">
-        <div className="reveal space-y-5 text-lg leading-relaxed text-fg/90">
+        {/* Cada párrafo se revela línea a línea, uno detrás de otro. */}
+        <Reveal kind="group" className="space-y-5 text-lg leading-relaxed text-fg/90">
           {cv.about[locale].map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
+            <TextReveal key={paragraph} as="p" by="lines" text={paragraph} />
           ))}
-        </div>
+        </Reveal>
 
-        <aside aria-label={facts.label} className="spotlight reveal rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-7">
-          <dl className="divide-y divide-border">
+        {/* La tarjeta sube y sus datos entran fila por fila. */}
+        <Reveal
+          as="aside"
+          aria-label={facts.label}
+          className="spotlight rounded-2xl border border-border bg-surface p-6 shadow-card sm:p-7"
+        >
+          <Stagger as="dl" className="divide-y divide-border">
             <Fact label={facts.location}>{cv.profile.location[locale]}</Fact>
             {current ? (
               <Fact label={facts.current}>
@@ -45,7 +53,7 @@ export function About({ locale }: { locale: Locale }) {
             <Fact label={facts.research}>
               <a
                 href={`#${t.sectionIds.publications}`}
-                className="underline decoration-border underline-offset-4 transition-colors hover:text-accent hover:decoration-accent"
+                className="underline decoration-border underline-offset-4 transition-colors duration-micro hover:text-accent hover:decoration-accent"
               >
                 {facts.researchValue}
               </a>
@@ -60,8 +68,8 @@ export function About({ locale }: { locale: Locale }) {
                 ))}
               </ul>
             </Fact>
-          </dl>
-        </aside>
+          </Stagger>
+        </Reveal>
       </div>
     </Section>
   );

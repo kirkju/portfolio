@@ -13,6 +13,15 @@ type Cleanup = () => void;
 
 const toMs = (seconds: number) => seconds * 1000;
 
+/**
+ * Paso entre elementos consecutivos, en ms. Se lee de la variable CSS y no del token,
+ * porque en móvil y con movimiento reducido el valor efectivo es otro (ver motion-css.ts).
+ */
+function currentStep() {
+  const value = Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--m-stagger"));
+  return Number.isFinite(value) ? value : toMs(stagger.base);
+}
+
 /** Un bloque raíz y todos los `data-reveal` que contiene, en orden de documento. */
 function members(root: HTMLElement) {
   return [root, ...root.querySelectorAll<HTMLElement>(SELECTOR)];
@@ -100,8 +109,7 @@ function arm(root: HTMLElement, splitText: boolean): Cleanup {
  * Suelta un bloque armado: cada `data-reveal` que contiene empieza un paso después del
  * anterior (`--d`, en ms). Devuelve cuánto tarda en terminar y cómo limpiar lo que añadió.
  */
-function show(root: HTMLElement, baseMs: number): { total: number; undo: Cleanup } {
-  const step = toMs(stagger.base);
+function show(root: HTMLElement, baseMs: number, step: number): { total: number; undo: Cleanup } {
   const items = members(root);
   const undo: Cleanup[] = [];
   let cursor = baseMs;
@@ -112,14 +120,22 @@ function show(root: HTMLElement, baseMs: number): { total: number; undo: Cleanup
     el.style.setProperty("--d", `${cursor}ms`);
 
     let parts = 0;
+    let sequential = false;
     if (el.dataset.reveal === "stagger") parts = el.children.length;
-    if (el.dataset.reveal === "words") parts = el.querySelectorAll(".word").length;
+    if (el.dataset.reveal === "words") {
+      parts = el.querySelectorAll(".word").length;
+      sequential = true;
+    }
     if (el.dataset.reveal === "lines") {
       const restore = splitLines(el);
       if (restore) undo.push(restore);
       parts = el.querySelectorAll(".line").length;
+      sequential = true;
     }
     end = Math.max(end, cursor + parts * toMs(stagger.slow));
+    // Un texto se lee en orden: lo siguiente espera a que haya salido su última palabra o línea.
+    // Los hijos de un `stagger`, en cambio, entran mientras sigue la secuencia.
+    if (sequential) cursor += Math.max(0, parts - 1) * step;
   });
 
   // Las líneas recién creadas necesitan un estilo calculado de partida para poder animarse.
@@ -169,14 +185,15 @@ function startReveals(): Cleanup {
   const observer = new IntersectionObserver(
     (entries) => {
       let lane = 0;
+      const step = currentStep();
       const entering = entries.filter((entry) => entry.isIntersecting).sort((a, b) => inDocumentOrder(a.target, b.target));
       for (const entry of entering) {
         observer.unobserve(entry.target);
         // Si el visitante saltó por encima (un ancla, "buscar en la página"), se muestra sin espera.
         const skipped = entry.boundingClientRect.bottom <= 0;
         for (const root of targets.get(entry.target) ?? []) {
-          const delay = skipped ? 0 : Math.min(lane++, reveal.maxLanes) * toMs(stagger.base);
-          const { total, undo } = show(root, delay);
+          const delay = skipped ? 0 : Math.min(lane++, reveal.maxLanes) * step;
+          const { total, undo } = show(root, delay, step);
           pendingUndo.set(root, undo);
           const timer = window.setTimeout(() => {
             timers.delete(timer);

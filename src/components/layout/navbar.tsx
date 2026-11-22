@@ -31,7 +31,7 @@ export function Navbar({ locale }: { locale: Locale }) {
     // clics se habilitan en la fila y no en toda la caja.
     <header className="site-header pointer-events-none fixed inset-x-0 top-0 z-50">
       {/* Fondo con blur, borde y sombra: capa aparte que aparece y se encoge al hacer scroll. */}
-      <span aria-hidden="true" className="header-bg absolute inset-0 border-b border-border/70 bg-bg/80 backdrop-blur-md" />
+      <span aria-hidden="true" className="header-bg absolute inset-0 border-b border-border/70 bg-bg/85 backdrop-blur-md" />
       <ScrollProgress />
       <div className="header-row wrapper pointer-events-auto relative flex h-16 items-center justify-between gap-4">
         <a
